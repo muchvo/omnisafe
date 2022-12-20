@@ -30,7 +30,6 @@ from safety_gymnasium.utils.task_utils import get_body_xvelp
 # Default location to look for xmls folder:
 BASE_DIR = os.path.dirname(safety_gymnasium.__file__)
 
-
 class World:  # pylint: disable=too-many-instance-attributes
     """This class starts mujoco simulation.
 
@@ -92,8 +91,13 @@ class World:  # pylint: disable=too-many-instance-attributes
             self.robot_base_xml = f.read()
         self.xml = xmltodict.parse(self.robot_base_xml)  # Nested OrderedDict objects
 
-        compiler = xmltodict.parse("""<compiler angle="radian" />""")
-        self.xml['mujoco']['compiler'] = compiler['compiler']
+        if 'compiler' not in self.xml['mujoco']:
+            compiler = xmltodict.parse("""<compiler angle="radian" />""")
+            self.xml['mujoco']['compiler'] = compiler['compiler']
+        else:
+            self.xml['mujoco']['compiler'].update({
+                '@meshdir': os.path.join(BASE_DIR, 'xmls', 'meshes')
+            })
 
         # Convenience accessor for xml dictionary
         worldbody = self.xml['mujoco']['worldbody']
@@ -102,7 +106,7 @@ class World:  # pylint: disable=too-many-instance-attributes
         worldbody['body']['@pos'] = convert(
             # pylint: disable-next=no-member
             np.r_[self.robot_xy, self.robot.z_height]
-        )  # pylint: disable=no-member
+        )
         worldbody['body']['@quat'] = convert(rot2quat(self.robot_rot))  # pylint: disable=no-member
 
         # We need this because xmltodict skips over single-item lists in the tree
@@ -111,7 +115,6 @@ class World:  # pylint: disable=too-many-instance-attributes
             worldbody['geom'] = [worldbody['geom']]
         else:
             worldbody['geom'] = []
-
         # Add equality section if missing
         if 'equality' not in self.xml['mujoco']:
             self.xml['mujoco']['equality'] = OrderedDict()
@@ -142,7 +145,21 @@ class World:  # pylint: disable=too-many-instance-attributes
                 """
             )
             self.xml['mujoco']['asset'] = asset['asset']
-
+        else:
+            self.xml['mujoco']['asset']['texture'] = []
+            self.xml['mujoco']['asset']['texture'].append({
+                '@type': 'skybox', '@builtin': 'gradient', '@rgb1': '0.527 0.582 0.906',
+                '@rgb2': '0.1 0.1 0.35', '@width': '800', '@height': '800', '@markrgb': '1 1 1',
+                '@mark': 'random', '@random': '0.001'
+                })
+            self.xml['mujoco']['asset']['texture'].append({
+                '@name': 'texplane', '@builtin': 'checker', '@height': '100', '@width': "100",
+                '@rgb1': "0.7 0.7 0.7", '@rgb2': "0.8 0.8 0.8", '@type': '2d'
+                })
+            self.xml['mujoco']['asset']['material'] = {
+                '@name': 'MatPlane', '@reflectance': '0.1', '@shininess': '0.1', '@specular': '0.1',
+                '@texrepeat': '10 10', '@texture': 'texplane'
+                }
         # Add light to the XML dictionary
         light = xmltodict.parse(
             """<b>
@@ -322,7 +339,8 @@ class World:  # pylint: disable=too-many-instance-attributes
         # Instantiate simulator
         # print(xmltodict.unparse(self.xml, pretty=True))
         self.xml_string = xmltodict.unparse(self.xml)
-
+        # print(self.xml_string)
+        # exit(0)
         self.model = mujoco.MjModel.from_xml_string(self.xml_string)  # pylint: disable=no-member
         self.data = mujoco.MjData(self.model)  # pylint: disable=no-member
 

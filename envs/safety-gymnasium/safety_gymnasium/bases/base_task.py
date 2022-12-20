@@ -84,9 +84,6 @@ class BaseTask(
         self.robot = Robot(self.robot_base)  # pylint: disable=no-member
         self.action_space = spaces.Box(-1, 1, (self.robot.nu,), dtype=np.float64)
         self.action_noise = 0.0  # Magnitude of independent per-component gaussian action noise
-        self.observe_vision = False  # Observe vision from the robot
-        self.observation_flatten = True  # Flatten observation into a vector
-        self.obs_flat_size = None
 
         # Obstacles which are added in environments.
         self._geoms = {}
@@ -451,7 +448,7 @@ class BaseTask(
 
         Rays are circularly projected from the robot body origin around the robot z axis.
         """
-        body = self.model.body_name2id('robot')
+        body = self.model.body('robot').id
         # pylint: disable-next=no-member
         grp = np.asarray([i == group for i in range(int(mujoco.mjNGROUP))], dtype='uint8')
         pos = np.asarray(self.world.robot_pos(), dtype='float64')
