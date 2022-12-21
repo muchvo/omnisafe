@@ -458,7 +458,8 @@ class BaseTask(
             theta = (i / self.lidar_num_bins) * np.pi * 2
             vec = np.matmul(mat_t, theta2vec(theta))  # Rotate from ego to world frame
             vec = np.asarray(vec, dtype='float64')
-            dist, _ = self.sim.ray_fast_group(pos, vec, grp, 1, body)  # pylint: disable=no-member
+            geom_id = np.array([0], dtype='int32')
+            dist = mujoco.mj_ray(self.model, self.data, pos, vec, grp, 1, body, geom_id)  # pylint: disable=no-member
             if dist >= 0:
                 obs[i] = np.exp(-dist)
         return obs
