@@ -26,7 +26,7 @@ class NarrowLevel0(BaseTask):
 
     def __init__(self, config):
         super().__init__(config=config)
-        
+
         self.num_steps = 500
 
         self.floor_size = [17.5, 17.5, .1]
@@ -156,8 +156,9 @@ class NarrowLevel0(BaseTask):
         """Create a world_config from our own config."""
         world_config = {}
 
+        world_config['floor_type'] = self.floor_type
         world_config['floor_size'] = self.floor_size
-        
+
         world_config['robot_base'] = self.robot.base
         world_config['robot_xy'] = layout['robot']
         if self.robot.rot is None:

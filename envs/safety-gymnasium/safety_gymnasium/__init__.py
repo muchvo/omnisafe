@@ -23,7 +23,7 @@ __all__ = ['register', 'make']
 
 VERSION = 'v0'
 
-ROBOT_NAMES = ('Point', 'Car')
+ROBOT_NAMES = ('Point', 'Car', 'Racecar')
 ROBOT_XMLS = {name: f'xmls/{name.lower()}.xml' for name in ROBOT_NAMES}
 BASE_SENSORS = ['accelerometer', 'velocimeter', 'gyro', 'magnetometer']
 EXTRA_SENSORS = {
@@ -138,8 +138,8 @@ combine(goal_tasks, robot_configs)
 #                                                                              #
 # =============================================================================#
 
-narrow_tasks = {'Narrow0': {}}
+narrow_tasks = {'Narrow0': {'floor_type': 'village'}}
 combine(narrow_tasks, robot_configs)
 
-race_tasks = {'Race0': {}}
+race_tasks = {'Race0': {'floor_type': 'village'}}
 combine(race_tasks, robot_configs)

@@ -116,6 +116,7 @@ class RaceLevel0(BaseTask):
         """Create a world_config from our own config."""
         world_config = {}
 
+        world_config['floor_type'] = self.floor_type
         world_config['floor_size'] = self.floor_size
         
         world_config['robot_base'] = self.robot.base
