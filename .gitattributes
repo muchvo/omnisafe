@@ -3,7 +3,10 @@
 *.ipynb linguist-detectable=false
 
 *.png binary
+*.PNG binary
 *.jpg binary
 *.jpeg binary
 *.gif binary
 *.pdf binary
+*.stl binary
+*.STL binary

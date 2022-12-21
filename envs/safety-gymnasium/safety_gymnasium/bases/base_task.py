@@ -40,6 +40,7 @@ class BaseTask(
 
         self.num_steps = 1000  # Maximum number of environment steps in an episode
 
+        self.floor_size = [3.5, 3.5, 0.1]
         self.placements_extents = [-2, -2, 2, 2]  # Placement limits (min X, min Y, max X, max Y)
         self.placements_margin = 0.0  # Additional margin added to keepout when placing objects
         # Starting position distribution
@@ -267,9 +268,11 @@ class BaseTask(
         self.build_observation_space()
 
     def build_world_config(self, layout):  # pylint: disable=too-many-branches
-        """Create a world_config from our own config"""
+        """Create a world_config from our own config."""
         world_config = {}
 
+        world_config['floor_size'] = self.floor_size
+        
         world_config['robot_base'] = self.robot.base
         world_config['robot_xy'] = layout['robot']
         if self.robot.rot is None:

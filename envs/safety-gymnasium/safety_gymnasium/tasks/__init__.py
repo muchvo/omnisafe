@@ -23,3 +23,5 @@ from safety_gymnasium.tasks.goal.goal_level2 import GoalLevel2
 from safety_gymnasium.tasks.push.push_level0 import PushLevel0
 from safety_gymnasium.tasks.push.push_level1 import PushLevel1
 from safety_gymnasium.tasks.push.push_level2 import PushLevel2
+from safety_gymnasium.tasks.vision.narrow import NarrowLevel0
+from safety_gymnasium.tasks.vision.race import RaceLevel0

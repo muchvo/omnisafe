@@ -92,7 +92,13 @@ class World:  # pylint: disable=too-many-instance-attributes
             self.robot_base_xml = f.read()
         self.xml = xmltodict.parse(self.robot_base_xml)  # Nested OrderedDict objects
 
-        compiler = xmltodict.parse("""<compiler angle="radian" />""")
+        compiler = xmltodict.parse(
+            f'''<compiler
+                angle="radian"
+                meshdir="{BASE_DIR}/assets/meshes"
+                texturedir="{BASE_DIR}/assets/textures"
+                />'''
+        )
         self.xml['mujoco']['compiler'] = compiler['compiler']
 
         # Convenience accessor for xml dictionary
@@ -138,6 +144,97 @@ class World:  # pylint: disable=too-many-instance-attributes
                         rgb1="0.7 0.7 0.7" rgb2="0.8 0.8 0.8" type="2d"/>
                     <material name="MatPlane" reflectance="0.1" shininess="0.1" specular="0.1"
                         texrepeat="10 10" texture="texplane"/>
+
+                    <texture name="village_floor" file="village_floor.PNG" type="2d"/>
+                    <material name="village_floor" reflectance=".1" texture="village_floor" texrepeat="25 25"/>
+
+                    <texture name="vase" file="vase.PNG" type="2d"/>
+                    <material name="vase" texture="vase" specular="1" shininess="1"/>
+                    <mesh name="vase" file="vase.obj" scale="0.003 0.003 0.003"/>
+
+                    <texture name="bush" file="bush.PNG" type="2d"/>
+                    <material name="bush" texture="bush" specular="1" shininess="1"/>
+                    <mesh name="bush" file="bush.obj" scale="0.0025 0.0025 0.0025"/>
+
+                    <texture name="flower_bush" file="flower_bush.PNG" type="2d"/>
+                    <material name="flower_bush" texture="flower_bush" specular="1" shininess="1"/>
+                    <mesh name="flower_bush" file="flower_bush.obj" scale="0.0035 0.0035 0.0035"/>
+
+                    <texture name="long_wall" file="long_wall.PNG" type="2d"/>
+                    <material name="long_wall" texture="long_wall" specular="1" shininess="1"/>
+                    <mesh name="long_wall" file="long_wall.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="bamboo_wall" file="bamboo_wall.PNG" type="2d"/>
+                    <material name="bamboo_wall" texture="bamboo_wall" specular="1" shininess="1"/>
+                    <mesh name="bamboo_wall" file="bamboo_wall.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="wooden_wall1" file="wooden_wall1.PNG" type="2d"/>
+                    <material name="wooden_wall1" texture="wooden_wall1" specular="1" shininess="1"/>
+                    <mesh name="wooden_wall1" file="wooden_wall1.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="wooden_wall2" file="wooden_wall2.PNG" type="2d"/>
+                    <material name="wooden_wall2" texture="wooden_wall2" specular="1" shininess="1"/>
+                    <mesh name="wooden_wall2" file="wooden_wall2.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="wooden_wall3" file="wooden_wall3.PNG" type="2d"/>
+                    <material name="wooden_wall3" texture="wooden_wall3" specular="1" shininess="1"/>
+                    <mesh name="wooden_wall3" file="wooden_wall3.obj" scale="0.02 0.02 0.02"/>
+
+                    <texture name="small_wooden_wall1" file="small_wooden_wall1.PNG" type="2d"/>
+                    <material name="small_wooden_wall1" texture="small_wooden_wall1" specular="1" shininess="1"/>
+                    <mesh name="small_wooden_wall1" file="small_wooden_wall1.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="wooden_door1" file="wooden_door1.PNG" type="2d"/>
+                    <material name="wooden_door1" texture="wooden_door1" specular="1" shininess="1"/>
+                    <mesh name="wooden_door1" file="wooden_door1.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="stone_wall" file="stone_wall.PNG" type="2d"/>
+                    <material name="stone_wall" texture="stone_wall" specular="1" shininess="1"/>
+                    <mesh name="stone_wall" file="stone_wall.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="stone_wall_corner" file="stone_wall_corner.PNG" type="2d"/>
+                    <material name="stone_wall_corner" texture="stone_wall_corner" specular="1" shininess="1"/>
+                    <mesh name="stone_wall_corner" file="stone_wall_corner.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="red_wall" file="red_wall.PNG" type="2d"/>
+                    <material name="red_wall" texture="red_wall" specular="1" shininess="1"/>
+                    <mesh name="red_wall" file="red_wall.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="red_wall_corner" file="red_wall_corner.PNG" type="2d"/>
+                    <material name="red_wall_corner" texture="red_wall_corner" specular="1" shininess="1"/>
+                    <mesh name="red_wall_corner" file="red_wall_corner.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="stone_pave" file="stone_pave.PNG" type="2d"/>
+                    <material name="stone_pave" texture="stone_pave" specular="1" shininess="1"/>
+                    <mesh name="stone_pave" file="stone_pave.obj" scale="0.008 0.008 0.008"/>
+
+                    <texture name="cliff1" file="cliff1.PNG" type="2d"/>
+                    <material name="cliff1" texture="cliff1" specular="1" shininess="1"/>
+                    <mesh name="cliff1" file="cliff1.obj" scale="0.0016 0.0032 0.0016"/>
+
+                    <texture name="cliff2" file="cliff2.PNG" type="2d"/>
+                    <material name="cliff2" texture="cliff2" specular="1" shininess="1"/>
+                    <mesh name="cliff2" file="cliff2.obj" scale="0.0064 0.0064 0.0064"/>
+
+                    <texture name="cliff3" file="cliff3.PNG" type="2d"/>
+                    <material name="cliff3" texture="cliff3" specular="1" shininess="1"/>
+                    <mesh name="cliff3" file="cliff3.obj" scale="0.0008 0.0008 0.0008"/>
+
+                    <texture name="circle" file="circle.PNG" type="2d"/>
+                    <material name="circle" texture="circle" specular="1" shininess="1"/>
+                    <mesh name="circle" file="circle.obj" scale="0.0024 0.0012 0.0024"/>
+
+                    <texture name="circle_boundary" file="circle_boundary.PNG" type="2d"/>
+                    <material name="circle_boundary" texture="circle_boundary" specular="1" shininess="1"/>
+                    <mesh name="circle_boundary" file="circle_boundary.obj" scale="0.044 0.008 0.008"/>
+
+                    <texture name="apple" file="apple.PNG" type="2d"/>
+                    <material name="apple" texture="apple" specular="1" shininess="1"/>
+                    <mesh name="apple" file="apple.obj" scale="0.07 0.07 0.07"/>
+
+                    <texture name="orange" file="orange.PNG" type="2d"/>
+                    <material name="orange" texture="orange" specular="1" shininess="1"/>
+                    <mesh name="orange" file="orange.obj" scale="0.12 0.12 0.12"/>
                 </asset>
                 """
             )
@@ -168,7 +265,7 @@ class World:  # pylint: disable=too-many-instance-attributes
                     {
                         '@size': convert(self.floor_size),  # pylint: disable=no-member
                         '@rgba': '1 1 1 1',
-                        '@material': 'MatPlane',
+                        '@material': 'village_floor',
                     }
                 )
 
@@ -213,8 +310,8 @@ class World:  # pylint: disable=too-many-instance-attributes
         for name, object in self.objects.items():  # pylint: disable=redefined-builtin, no-member
             assert object['name'] == name, f'Inconsistent {name} {object}'
             object = object.copy()  # don't modify original object
-            object['quat'] = rot2quat(object['rot'])
             if name == 'push_box':
+                object['quat'] = rot2quat(object['rot'])
                 dim = object['size'][0]
                 object['dim'] = dim
                 object['width'] = dim / 2
@@ -222,41 +319,52 @@ class World:  # pylint: disable=too-many-instance-attributes
                 object['y'] = dim
                 body = xmltodict.parse(
                     # pylint: disable-next=consider-using-f-string
-                    """
+                    '''
                     <body name="{name}" pos="{pos}" quat="{quat}">
                         <freejoint name="{name}"/>
                         <geom name="{name}" type="{type}" size="{size}" density="{density}"
                             rgba="{rgba}" group="{group}"/>
-                        <geom name="col1" type="{type}" size="{width} {width} {dim}"
-                            density="{density}" rgba="{rgba}" group="{group}"
-                            pos="{x} {y} 0"/>
-                        <geom name="col2" type="{type}" size="{width} {width} {dim}"
-                            density="{density}" rgba="{rgba}" group="{group}"
-                            pos="-{x} {y} 0"/>
-                        <geom name="col3" type="{type}" size="{width} {width} {dim}"
-                            density="{density}" rgba="{rgba}" group="{group}"
-                            pos="{x} -{y} 0"/>
-                        <geom name="col4" type="{type}" size="{width} {width} {dim}"
-                            density="{density}" rgba="{rgba}" group="{group}"
-                            pos="-{x} -{y} 0"/>
+                        <geom name="col1" type="{type}" size="{width} {width} {dim}" density="{density}"
+                            rgba="{rgba}" group="{group}" pos="{x} {y} 0"/>
+                        <geom name="col2" type="{type}" size="{width} {width} {dim}" density="{density}"
+                            rgba="{rgba}" group="{group}" pos="-{x} {y} 0"/>
+                        <geom name="col3" type="{type}" size="{width} {width} {dim}" density="{density}"
+                            rgba="{rgba}" group="{group}" pos="{x} -{y} 0"/>
+                        <geom name="col4" type="{type}" size="{width} {width} {dim}" density="{density}"
+                            rgba="{rgba}" group="{group}" pos="-{x} -{y} 0"/>
                     </body>
-                """.format(
+                '''.format(
                         **{k: convert(v) for k, v in object.items()}
                     )
                 )
             else:
-                body = xmltodict.parse(
-                    # pylint: disable-next=consider-using-f-string
-                    """
-                    <body name="{name}" pos="{pos}" quat="{quat}">
-                        <freejoint name="{name}"/>
-                        <geom name="{name}" type="{type}" size="{size}" density="{density}"
-                            rgba="{rgba}" group="{group}"/>
-                    </body>
-                """.format(
-                        **{k: convert(v) for k, v in object.items()}
+                if object['type'] == 'mesh':
+                    body = xmltodict.parse(
+                        # pylint: disable-next=consider-using-f-string
+                        '''
+                        <body name="{name}" pos="{pos}" euler="{euler}" >
+                            <freejoint name="{name}"/>
+                            <geom name="{name}" type="mesh" mesh="{mesh}" material="{material}" density="{density}"
+                                rgba="{rgba}" group="{group}" condim="6" />
+                        </body>
+                    '''.format(
+                            **{k: convert(v) for k, v in object.items()}
+                        )
                     )
-                )
+                else:
+                    object['quat'] = rot2quat(object['rot'])
+                    body = xmltodict.parse(
+                        # pylint: disable-next=consider-using-f-string
+                        '''
+                        <body name="{name}" pos="{pos}" quat="{quat}">
+                            <freejoint name="{name}"/>
+                            <geom name="{name}" type="{type}" size="{size}" density="{density}"
+                                rgba="{rgba}" group="{group}"/>
+                        </body>
+                    '''.format(
+                            **{k: convert(v) for k, v in object.items()}
+                        )
+                    )
             # Append new body to world, making it a list optionally
             # Add the object to the world
             worldbody['body'].append(body['body'])
@@ -265,9 +373,7 @@ class World:  # pylint: disable=too-many-instance-attributes
             # Mocap names are suffixed with 'mocap'
             assert mocap['name'] == name, f'Inconsistent {name}'
             assert (
-                # pylint: disable-next=no-member
-                name.replace('mocap', 'obj')
-                in self.objects  # pylint: disable=no-member
+                name.replace('mocap', 'obj') in self.objects  # pylint: disable=no-member
             ), f'missing object for {name}'  # pylint: disable=no-member
             # Add the object to the world
             mocap = mocap.copy()  # don't modify original object
@@ -300,21 +406,34 @@ class World:  # pylint: disable=too-many-instance-attributes
         for name, geom in self.geoms.items():  # pylint: disable=no-member
             assert geom['name'] == name, f'Inconsistent {name} {geom}'
             geom = geom.copy()  # don't modify original object
-            geom['quat'] = rot2quat(geom['rot'])
             geom['contype'] = geom.get('contype', 1)
             geom['conaffinity'] = geom.get('conaffinity', 1)
-            body = xmltodict.parse(
-                # pylint: disable-next=consider-using-f-string
-                """
-                <body name="{name}" pos="{pos}" quat="{quat}">
-                    <geom name="{name}" type="{type}" size="{size}" rgba="{rgba}" group="{group}"
-                        contype="{contype}" conaffinity="{conaffinity}"/>
-                </body>
-            """.format(
-                    **{k: convert(v) for k, v in geom.items()}
+            if geom['type'] == 'mesh':
+                body = xmltodict.parse(
+                    # pylint: disable-next=consider-using-f-string
+                    '''
+                    <body name="{name}" pos="{pos}" euler="{euler}">
+                        <geom name="{name}" type="mesh" mesh="{mesh}" material="{material}"
+                        rgba="1 1 1 1" group="{group}" contype="{contype}"
+                        conaffinity="{conaffinity}"/>
+                    </body>
+                '''.format(
+                            **{k: convert(v) for k, v in geom.items()}
+                        )
+                    )
+            else:
+                geom['quat'] = rot2quat(geom['rot'])
+                body = xmltodict.parse(
+                    # pylint: disable-next=consider-using-f-string
+                    '''
+                    <body name="{name}" pos="{pos}" quat="{quat}">
+                        <geom name="{name}" type="{type}" size="{size}" rgba="{rgba}"
+                        group="{group}" contype="{contype}" conaffinity="{conaffinity}"/>
+                    </body>
+                '''.format(
+                        **{k: convert(v) for k, v in geom.items()}
+                    )
                 )
-            )
-
             # Append new body to world, making it a list optionally
             # Add the object to the world
             worldbody['body'].append(body['body'])

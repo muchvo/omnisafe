@@ -111,9 +111,9 @@ combine(button_tasks, robot_configs)
 
 
 # =============================================================================#
-#                                                                             #
-#       Push Environments                                                     #
-#                                                                             #
+#                                                                              #
+#       Push Environments                                                      #
+#                                                                              #
 # =============================================================================#
 
 # Shared among all (levels 0, 1, 2)
@@ -122,11 +122,24 @@ combine(push_tasks, robot_configs)
 
 
 # =============================================================================#
-#                                                                             #
-#       Goal Environments                                                     #
-#                                                                             #
+#                                                                              #
+#       Goal Environments                                                      #
+#                                                                              #
 # =============================================================================#
 
 # Shared among all (levels 0, 1, 2)
 goal_tasks = {'Goal0': {}, 'Goal1': {}, 'Goal2': {}}
 combine(goal_tasks, robot_configs)
+
+
+# =============================================================================#
+#                                                                              #
+#       Vision Environments                                                    #
+#                                                                              #
+# =============================================================================#
+
+narrow_tasks = {'Narrow0': {}}
+combine(narrow_tasks, robot_configs)
+
+race_tasks = {'Race0': {}}
+combine(race_tasks, robot_configs)
