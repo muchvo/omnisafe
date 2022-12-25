@@ -67,7 +67,7 @@ for name in ROBOT_NAMES:
     robot_configs[name] = config
 
 
-def combine(tasks, agents):
+def combine(tasks, agents, max_episode_steps):
     """Combine tasks and agents together to register environment tasks."""
     for task_name, task_config in tasks.items():
         for robot_name, robot_config in agents.items():
@@ -80,6 +80,7 @@ def combine(tasks, agents):
                 id=env_name,
                 entry_point='safety_gymnasium.builder:Builder',
                 kwargs={'config': combined_config, 'task_id': env_name},
+                max_episode_steps=max_episode_steps,
             )
 
             if MAKE_VISION_ENVIRONMENTS:
@@ -96,6 +97,7 @@ def combine(tasks, agents):
                     id=vision_env_name,
                     entry_point='safety_gymnasium.builder:Builder',
                     kwargs={'config': combined_config, 'task_id': env_name},
+                    max_episode_steps=max_episode_steps,
                 )
 
 
@@ -105,9 +107,8 @@ def combine(tasks, agents):
 # #                                                                             #
 # #=============================================================================#
 
-# Shared among all (levels 0, 1, 2)
 button_tasks = {'Button0': {}, 'Button1': {}, 'Button2': {}}
-combine(button_tasks, robot_configs)
+combine(button_tasks, robot_configs, max_episode_steps=1000)
 
 
 # =============================================================================#
@@ -116,9 +117,8 @@ combine(button_tasks, robot_configs)
 #                                                                              #
 # =============================================================================#
 
-# Shared among all (levels 0, 1, 2)
 push_tasks = {'Push0': {}, 'Push1': {}, 'Push2': {}}
-combine(push_tasks, robot_configs)
+combine(push_tasks, robot_configs, max_episode_steps=1000)
 
 
 # =============================================================================#
@@ -127,9 +127,8 @@ combine(push_tasks, robot_configs)
 #                                                                              #
 # =============================================================================#
 
-# Shared among all (levels 0, 1, 2)
 goal_tasks = {'Goal0': {}, 'Goal1': {}, 'Goal2': {}}
-combine(goal_tasks, robot_configs)
+combine(goal_tasks, robot_configs, max_episode_steps=1000)
 
 
 # =============================================================================#
@@ -139,7 +138,7 @@ combine(goal_tasks, robot_configs)
 # =============================================================================#
 
 narrow_tasks = {'Narrow0': {'floor_type': 'village'}}
-combine(narrow_tasks, robot_configs)
+combine(narrow_tasks, robot_configs, max_episode_steps=500)
 
 race_tasks = {'Race0': {'floor_type': 'village'}}
-combine(race_tasks, robot_configs)
+combine(race_tasks, robot_configs, max_episode_steps=500)
