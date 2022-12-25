@@ -19,7 +19,6 @@ GROUP = {
     # We use these for ray casting lidar, where there are different lidar types.
     # These work by turning "on" the group to see and "off" all the other groups.
     # See obs_lidar_natural() for more.
-    'goal': 0,
     'push_box': 1,
     'button': 1,
     'wall': 2,
@@ -30,5 +29,6 @@ GROUP = {
     'circle': 6,
     'apple': 7,
     'orange': 8,
-    'sigwall': 9,
+    'goal': 9,
+    'sigwall': 10,
 }
