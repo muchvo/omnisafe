@@ -139,7 +139,7 @@ combine(goal_tasks, robot_configs, max_episode_steps=1000)
 # =============================================================================#
 
 circle_tasks = {'Circle0': {}}
-combine(circle_tasks, robot_configs)
+combine(circle_tasks, robot_configs, max_episode_steps=500)
 
 
 # =============================================================================#
@@ -149,7 +149,7 @@ combine(circle_tasks, robot_configs)
 # =============================================================================#
 
 run_tasks = {'Run0': {}}
-combine(run_tasks, robot_configs)
+combine(run_tasks, robot_configs, max_episode_steps=500)
 
 
 # =============================================================================#
