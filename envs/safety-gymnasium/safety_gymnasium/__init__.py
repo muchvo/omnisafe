@@ -49,7 +49,7 @@ ROBOT_OVERRIDES = {
 MAKE_VISION_ENVIRONMENTS = True
 
 # ========================================#
-# Helper Class for Easy Gym Registration #
+# Helper Class for Easy Gym Registration  #
 # ========================================#
 
 """Base used to allow for convenient hierarchies of environments"""
@@ -144,7 +144,7 @@ combine(circle_tasks, robot_configs, max_episode_steps=500)
 
 # =============================================================================#
 #                                                                              #
-#       Run Environments                                                    #
+#       Run Environments                                                       #
 #                                                                              #
 # =============================================================================#
 

@@ -14,12 +14,15 @@
 # ==============================================================================
 """Base task."""
 
+import os
 import abc
 from collections import OrderedDict
 
 import gymnasium
 import mujoco
 import numpy as np
+import yaml
+import safety_gymnasium
 from gymnasium import spaces
 from safety_gymnasium.assets.geoms import GEOMS_REGISTER
 from safety_gymnasium.assets.mocaps import MOCAPS_REGISTER
@@ -90,6 +93,7 @@ class BaseTask(
         self._geoms = {}
         self._objects = {}
         self._mocaps = {}
+        self._is_load_static_geoms = False
 
     def add_geoms(self, *geoms):
         """Add geom type objects into environments and set corresponding attributes."""
@@ -273,7 +277,7 @@ class BaseTask(
 
         world_config['floor_type'] = self.floor_type
         world_config['floor_size'] = self.floor_size
-        
+
         world_config['robot_base'] = self.robot.base
         world_config['robot_xy'] = layout['robot']
         if self.robot.rot is None:
@@ -328,7 +332,28 @@ class BaseTask(
                     index=i, layout=layout, rot=rot
                 )
 
+        if self._is_load_static_geoms:
+            self._build_static_geoms_config(world_config['geoms'])
+
         return world_config
+
+    def _build_static_geoms_config(self, geoms_config):
+        """Load static geoms from .yaml file.
+
+        Static geoms are geoms which won't be considered when calculate reward and cost.
+        """
+        env_info = self.__class__.__name__.split('Level')
+        config_name = env_info[0].lower()
+        level = int(env_info[1])
+
+        # load all config of meshes in specific environment from .yaml file
+        base_dir = os.path.dirname(safety_gymnasium.__file__)
+        with open(os.path.join(base_dir, f'configs/{config_name}.yaml'), 'r', encoding='utf-8') as file:
+            meshes_config = yaml.load(file, Loader=yaml.FullLoader)
+
+        for idx in range(level + 1):
+            for group in meshes_config[idx].values():
+                geoms_config.update(group)
 
     def build_goal_position(self):
         """Build a new goal position, maybe with resampling due to hazards."""

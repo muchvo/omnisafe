@@ -22,6 +22,7 @@ import mujoco
 import numpy as np
 import safety_gymnasium
 import xmltodict
+import yaml
 from safety_gymnasium.assets.robot import Robot
 from safety_gymnasium.utils.common_utils import convert, rot2quat
 from safety_gymnasium.utils.task_utils import get_body_xvelp
@@ -143,175 +144,21 @@ class World:  # pylint: disable=too-many-instance-attributes
         material = self.xml['mujoco']['asset']['material']
         texture = self.xml['mujoco']['asset']['texture']
         mesh = self.xml['mujoco']['asset']['mesh']
-        texture.append({
-            '@type': 'skybox', '@builtin': 'gradient', '@rgb1': '0.527 0.582 0.906',
-            '@rgb2': '0.1 0.1 0.35', '@width': '800', '@height': '800', '@markrgb': '1 1 1',
-            '@mark': 'random', '@random': '0.001'
-            })
+
+        # load all assets config from .yaml file
+        with open(os.path.join(BASE_DIR, 'configs/assets.yaml'), 'r', encoding='utf-8') as file:
+            assets_config = yaml.load(file, Loader=yaml.FullLoader)
+
+        texture.append(assets_config['textures']['skybox'])
 
         if self.floor_type == 'mat':  # pylint: disable=no-member
-            texture.append({
-                '@name': 'texplane', '@builtin': 'checker', '@height': '100', '@width': "100",
-                '@rgb1': "0.7 0.7 0.7", '@rgb2': "0.8 0.8 0.8", '@type': '2d'
-                })
-            material.append({
-                '@name': 'MatPlane', '@reflectance': '0.1', '@shininess': '0.1', '@specular': '0.1',
-                '@texrepeat': '10 10', '@texture': 'texplane'
-                })
+            texture.append(assets_config['textures']['matplane'])
+            material.append(assets_config['materials']['matplane'])
         elif self.floor_type == 'village':  # pylint: disable=no-member
-            texture.append({
-                '@name': 'village_floor', '@file': 'village_floor.PNG', '@type': '2d'
-                })
-            material.append({
-                '@name': 'village_floor', '@reflectance': '0.1',
-                '@texrepeat': '25 25', '@texture': 'village_floor'
-                })
+            texture.append(assets_config['textures']['village_floor'])
+            material.append(assets_config['materials']['village_floor'])
         else:
             raise NotImplementedError
-
-        all_textures = {}
-        all_materials = {}
-        all_meshes = {}
-
-        all_textures['bush'] = {
-            '@name': 'bush', '@file': 'bush.PNG', '@type': '2d'
-            }
-        all_materials['bush'] = {
-            '@name': 'bush', '@texture': 'bush', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['bush'] = {
-            '@name': 'bush', '@file': 'bush.obj', '@scale': "0.0025 0.0025 0.0025"
-        }
-
-        all_textures['flower_bush'] = {
-            '@name': 'flower_bush', '@file': 'flower_bush.PNG', '@type': '2d'
-            }
-        all_materials['flower_bush'] = {
-            '@name': 'flower_bush', '@texture': 'flower_bush', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['flower_bush'] = {
-            '@name': 'flower_bush', '@file': 'flower_bush.obj', '@scale': "0.0035 0.0035 0.0035"
-        }
-
-        all_textures['long_wall'] = {
-            '@name': 'long_wall', '@file': 'long_wall.PNG', '@type': '2d'
-            }
-        all_materials['long_wall'] = {
-            '@name': 'long_wall', '@texture': 'long_wall', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['long_wall'] = {
-            '@name': 'long_wall', '@file': 'long_wall.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['bamboo_wall'] = {
-            '@name': 'bamboo_wall', '@file': 'bamboo_wall.PNG', '@type': '2d'
-            }
-        all_materials['bamboo_wall'] = {
-            '@name': 'bamboo_wall', '@texture': 'bamboo_wall', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['bamboo_wall'] = {
-            '@name': 'bamboo_wall', '@file': 'bamboo_wall.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['wooden_wall1'] = {
-            '@name': 'wooden_wall1', '@file': 'wooden_wall1.PNG', '@type': '2d'
-            }
-        all_materials['wooden_wall1'] = {
-            '@name': 'wooden_wall1', '@texture': 'wooden_wall1', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['wooden_wall1'] = {
-            '@name': 'wooden_wall1', '@file': 'wooden_wall1.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['wooden_wall2'] = {
-            '@name': 'wooden_wall2', '@file': 'wooden_wall2.PNG', '@type': '2d'
-            }
-        all_materials['wooden_wall2'] = {
-            '@name': 'wooden_wall2', '@texture': 'wooden_wall2', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['wooden_wall2'] = {
-            '@name': 'wooden_wall2', '@file': 'wooden_wall2.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['wooden_wall3'] = {
-            '@name': 'wooden_wall3', '@file': 'wooden_wall3.PNG', '@type': '2d'
-            }
-        all_materials['wooden_wall3'] = {
-            '@name': 'wooden_wall3', '@texture': 'wooden_wall3', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['wooden_wall3'] = {
-            '@name': 'wooden_wall3', '@file': 'wooden_wall3.obj', '@scale': "0.02 0.02 0.02"
-        }
-
-        all_textures['small_wooden_wall1'] = {
-            '@name': 'small_wooden_wall1', '@file': 'small_wooden_wall1.PNG', '@type': '2d'
-            }
-        all_materials['small_wooden_wall1'] = {
-            '@name': 'small_wooden_wall1', '@texture': 'small_wooden_wall1', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['small_wooden_wall1'] = {
-            '@name': 'small_wooden_wall1', '@file': 'small_wooden_wall1.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['wooden_door1'] = {
-            '@name': 'wooden_door1', '@file': 'wooden_door1.PNG', '@type': '2d'
-            }
-        all_materials['wooden_door1'] = {
-            '@name': 'wooden_door1', '@texture': 'wooden_door1', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['wooden_door1'] = {
-            '@name': 'wooden_door1', '@file': 'wooden_door1.obj', '@scale': "0.008 0.008 0.008"
-        }
-
-        all_textures['cliff1'] = {
-            '@name': 'cliff1', '@file': 'cliff1.PNG', '@type': '2d'
-            }
-        all_materials['cliff1'] = {
-            '@name': 'cliff1', '@texture': 'cliff1', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['cliff1'] = {
-            '@name': 'cliff1', '@file': 'cliff1.obj', '@scale': "0.0016 0.0032 0.0016"
-        }
-
-        all_textures['cliff2'] = {
-            '@name': 'cliff2', '@file': 'cliff2.PNG', '@type': '2d'
-            }
-        all_materials['cliff2'] = {
-            '@name': 'cliff2', '@texture': 'cliff2', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['cliff2'] = {
-            '@name': 'cliff2', '@file': 'cliff2.obj', '@scale': "0.0064 0.0064 0.0064"
-        }
-
-        all_textures['cliff3'] = {
-            '@name': 'cliff3', '@file': 'cliff3.PNG', '@type': '2d'
-            }
-        all_materials['cliff3'] = {
-            '@name': 'cliff3', '@texture': 'cliff3', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['cliff3'] = {
-            '@name': 'cliff3', '@file': 'cliff3.obj', '@scale': "0.0008 0.0008 0.0008"
-        }
-
-        all_textures['apple'] = {
-            '@name': 'apple', '@file': 'apple.PNG', '@type': '2d'
-            }
-        all_materials['apple'] = {
-            '@name': 'apple', '@texture': 'apple', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['apple'] = {
-            '@name': 'apple', '@file': 'apple.obj', '@scale': "0.07 0.07 0.07"
-        }
-
-        all_textures['orange'] = {
-            '@name': 'orange', '@file': 'orange.PNG', '@type': '2d'
-            }
-        all_materials['orange'] = {
-            '@name': 'orange', '@texture': 'orange', '@specular': 1, '@shininess': 1
-            }
-        all_meshes['orange'] = {
-            '@name': 'orange', '@file': 'orange.obj', '@scale': "0.12 0.12 0.12"
-        }
 
         selected_textures = {}
         selected_materials = {}
@@ -319,21 +166,21 @@ class World:  # pylint: disable=too-many-instance-attributes
         for name, config in self.geoms.items():  # pylint: disable=no-member
             if config['type'] == 'mesh':
                 mesh_name = config['mesh']
-                selected_textures[mesh_name] = all_textures[mesh_name]
-                selected_materials[mesh_name] = all_materials[mesh_name]
-                selected_meshes[mesh_name] = all_meshes[mesh_name]
+                selected_textures[mesh_name] = assets_config['textures'][mesh_name]
+                selected_materials[mesh_name] = assets_config['materials'][mesh_name]
+                selected_meshes[mesh_name] = assets_config['meshes'][mesh_name]
         for name, config in self.objects.items():  # pylint: disable=no-member
             if config['type'] == 'mesh':
                 mesh_name = config['mesh']
-                selected_textures[mesh_name] = all_textures[mesh_name]
-                selected_materials[mesh_name] = all_materials[mesh_name]
-                selected_meshes[mesh_name] = all_meshes[mesh_name]
+                selected_textures[mesh_name] = assets_config['textures'][mesh_name]
+                selected_materials[mesh_name] = assets_config['materials'][mesh_name]
+                selected_meshes[mesh_name] = assets_config['meshes'][mesh_name]
         for name, config in self.mocaps.items():  # pylint: disable=no-member
             if config['type'] == 'mesh':
                 mesh_name = config['mesh']
-                selected_textures[mesh_name] = all_textures[mesh_name]
-                selected_materials[mesh_name] = all_materials[mesh_name]
-                selected_meshes[mesh_name] = all_meshes[mesh_name]
+                selected_textures[mesh_name] = assets_config['textures'][mesh_name]
+                selected_materials[mesh_name] = assets_config['materials'][mesh_name]
+                selected_meshes[mesh_name] = assets_config['meshes'][mesh_name]
         texture += selected_textures.values()
         material += selected_materials.values()
         mesh += selected_meshes.values()
@@ -366,7 +213,7 @@ class World:  # pylint: disable=too-many-instance-attributes
                     }
                 )
                 if self.floor_type == 'mat':  # pylint: disable=no-member
-                    g.update({'@material': 'MatPlane'})
+                    g.update({'@material': 'matplane'})
                 elif self.floor_type == 'village':  # pylint: disable=no-member
                     g.update({'@material': 'village_floor'})
                 else:

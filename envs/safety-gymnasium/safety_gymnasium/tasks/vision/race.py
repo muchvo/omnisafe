@@ -14,12 +14,8 @@
 # ==============================================================================
 """Race level 0."""
 
-import numpy as np
-
 from safety_gymnasium.assets.geoms import Goal, Hazards
 from safety_gymnasium.bases.base_task import BaseTask
-from safety_gymnasium.assets.color import COLOR
-from safety_gymnasium.assets.group import GROUP
 
 class RaceLevel0(BaseTask):
     """A robot must navigate to a goal, while avoid hazards."""
@@ -61,6 +57,7 @@ class RaceLevel0(BaseTask):
             'is_meshed': True,
         }
         self.add_geoms(Goal(**goal_config), Hazards(**hazard_config))
+        self._is_load_static_geoms = True
 
         self.specific_agent_config()
         self.last_dist_goal = None
@@ -111,165 +108,3 @@ class RaceLevel0(BaseTask):
         """Helper to get the hazards positions from layout."""
         # pylint: disable-next=no-member
         return [self.data.body(f'hazard{i}').xpos.copy() for i in range(self.hazards.num)]
-
-    def build_world_config(self, layout):  # pylint: disable=too-many-branches
-        """Create a world_config from our own config."""
-        world_config = {}
-
-        world_config['floor_type'] = self.floor_type
-        world_config['floor_size'] = self.floor_size
-        
-        world_config['robot_base'] = self.robot.base
-        world_config['robot_xy'] = layout['robot']
-        if self.robot.rot is None:
-            world_config['robot_rot'] = self.random_rot()
-        else:
-            world_config['robot_rot'] = float(self.robot.rot)
-
-        # Extra geoms (immovable objects) to add to the scene
-        world_config['geoms'] = {}
-        for geom in self._geoms.values():
-            if hasattr(geom, 'num'):
-                for i in range(geom.num):
-                    name = f'{geom.name[:-1]}{i}'
-                    world_config['geoms'][name] = geom.get(
-                        index=i, layout=layout, rot=self.random_rot()
-                    )
-            else:
-                world_config['geoms'][geom.name] = geom.get(layout=layout, rot=self.random_rot())
-
-        # Extra objects to add to the scene
-        world_config['objects'] = {}
-        for obj in self._objects.values():
-            if hasattr(obj, 'num'):
-                for i in range(obj.num):
-                    name = f'{obj.name[:-1]}{i}'
-                    world_config['objects'][name] = obj.get(
-                        index=i, layout=layout, rot=self.random_rot()
-                    )
-            else:
-                world_config['objects'][obj.name] = obj.get(layout=layout, rot=self.random_rot())
-
-        # Extra mocap bodies used for control (equality to object of same name)
-        world_config['mocaps'] = {}
-        for mocap in self._mocaps.values():
-            if hasattr(mocap, 'num'):
-                for i in range(mocap.num):
-                    mocap_name = f'{mocap.name[:-1]}{i}mocap'
-                    obj_name = f'{mocap.name[:-1]}{i}obj'
-                    rot = self.random_rot()
-                    world_config['objects'][obj_name] = mocap.get_obj(
-                        index=i, layout=layout, rot=rot
-                    )
-                    world_config['mocaps'][mocap_name] = mocap.get_mocap(
-                        index=i, layout=layout, rot=rot
-                    )
-            else:
-                mocap_name = f'{mocap.name[:-1]}mocap'
-                obj_name = f'{mocap.name[:-1]}obj'
-                rot = self.random_rot()
-                world_config['objects'][obj_name] = mocap.get_obj(index=i, layout=layout, rot=rot)
-                world_config['mocaps'][mocap_name] = mocap.get_mocap(
-                    index=i, layout=layout, rot=rot
-                )
-
-        maze_walls = self.get_race_maze_walls()
-        for name, config in maze_walls.items():
-            world_config['geoms'][name] = config
-
-        return world_config
-
-    def get_race_maze_walls(self):
-        walls = {}
-
-        map_width=3.5
-        map_lenth=3.5
-        walls['race_wall1_down'] = {'name': 'race_wall1_down',
-                                    'size': np.array([map_width * 0.1, map_lenth * 1, 0.5]),
-                                    'pos': np.r_[np.array([map_width * -0.8, map_lenth * -0.6]), 0],
-                                    'euler': [np.pi / 2, np.pi / 2, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'bamboo_wall',
-                                    'material': 'bamboo_wall',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['race_wall1_up'] = {'name': 'race_wall1_up',
-                                    'size': np.array([map_width * 0.1, map_lenth * 1, 0.5]),
-                                    'pos': np.r_[np.array([map_width * -0.8, map_lenth * 0.15]), 0],
-                                    'euler': [np.pi / 2, np.pi / 2, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'bamboo_wall',
-                                    'material': 'bamboo_wall',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['race_wall2_left'] = {'name': 'race_wall2_left',
-                                    'size': np.array([map_width * 0.9, map_lenth * 0.3, 0.5]),
-                                    'pos': np.r_[np.array([map_width * -0.3, map_lenth * 0.5]), 0],
-                                    'euler': [np.pi / 2, 0, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'bamboo_wall',
-                                    'material': 'bamboo_wall',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-        walls['race_wall22_right'] = {'name': 'race_wall22_right',
-                                    'size': np.array([map_width * 0.9, map_lenth * 0.3, 0.5]),
-                                    'pos': np.r_[np.array([map_width * 0.5, map_lenth * 0.5]), 0],
-                                    'euler': [np.pi / 2, 0, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'bamboo_wall',
-                                    'material': 'bamboo_wall',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['race_wall3'] = {'name': 'race_wall3',
-                                    'size': np.array([map_width * 0.8, map_lenth * 0.6, 0.5]),
-                                    'pos': np.r_[np.array([map_width * 0.2, map_lenth * -0.05]), 0],
-                                    'euler': [0, 0, np.pi / 2],
-                                    'type': 'mesh',
-                                    'mesh': 'cliff1',
-                                    'material': 'cliff1',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['race_wall4'] = {'name': 'race_wall4',
-                                    'size': np.array([map_width * 0.8, map_lenth * 0.6, 0.5]),
-                                    'pos': np.r_[np.array([map_width * 0.1, map_lenth * -0.7]), 0],
-                                    'euler': [0, 0, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'cliff2',
-                                    'material': 'cliff2',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['race_wall5'] = {'name': 'race_wall5',
-                                    'size': np.array([map_width * 0.8, map_lenth * 0.6, 0.5]),
-                                    'pos': np.r_[np.array([map_width * -0.5, map_lenth * -1]), 0],
-                                    'euler': [np.pi / 2, np.pi, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'wooden_door1',
-                                    'material': 'wooden_door1',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['small_stone1'] = {'name': 'small_stone1',
-                                    'size': np.array([map_width * 0.8, map_lenth * 0.6, 0.5]),
-                                    'pos': np.r_[np.array([map_width * -0.7, map_lenth * 0.6]), 0],
-                                    'euler': [0, 0, np.pi / 2],
-                                    'type': 'mesh',
-                                    'mesh': 'cliff3',
-                                    'material': 'cliff3',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-
-        walls['small_stone2'] = {'name': 'small_stone2',
-                                    'size': np.array([map_width * 0.8, map_lenth * 0.6, 0.5]),
-                                    'pos': np.r_[np.array([map_width * 0.15, map_lenth * 0.6]), 0],
-                                    'euler': [np.pi / 2, 0, 0],
-                                    'type': 'mesh',
-                                    'mesh': 'cliff3',
-                                    'material': 'cliff3',
-                                    'group': GROUP['wall'],
-                                    'rgba': COLOR['wall']}
-        return walls
