@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Circle."""
+"""Circle level0."""
 
-import mujoco
 import numpy as np
-from safety_gymnasium.assets.geoms import Circle, Sigwalls
+from safety_gymnasium.assets.geoms import Circle
 from safety_gymnasium.bases import BaseTask
 
 
 class CircleLevel0(BaseTask):
-    """A robot want to loop around the boundary of circle, while avoid going outside the boundary."""
+    """A robot want to loop around the boundary of circle."""
 
     def __init__(self, config):
         super().__init__(config=config)
@@ -41,25 +40,12 @@ class CircleLevel0(BaseTask):
 
         self.lidar_max_dist = 6
 
-        self.reward_factor: float = (
-            1e-1  # Reward for circle goal (complicated formula depending on pos and vel)
-        )
+        # Reward for circle goal (complicated formula depending on pos and vel)
+        self.reward_factor: float = 1e-1
 
-        self.add_geoms(Circle(), Sigwalls())
+        self.add_geoms(Circle())
 
         self.specific_agent_config()
-
-    def calculate_cost(self):
-        """There are costs only when agent go out of the boundary."""
-        # pylint: disable-next=no-member
-        mujoco.mj_forward(self.model, self.data)  # Ensure positions and contacts are correct
-        cost = {}
-
-        cost['cost_out_of_boundary'] = self.robot_pos[0] > 1.125 or self.robot_pos[0] < -1.125
-
-        # Sum all costs into single total cost
-        cost['cost'] = sum(v for k, v in cost.items() if k.startswith('cost_'))
-        return cost
 
     def calculate_reward(self):
         """The agent should loop around the boundary of circle."""

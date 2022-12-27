@@ -23,7 +23,7 @@ __all__ = ['register', 'make']
 
 VERSION = 'v0'
 
-ROBOT_NAMES = ('Point', 'Car', 'Racecar')
+ROBOT_NAMES = ('Point', 'Car', 'Racecar', 'Humanoid')
 ROBOT_XMLS = {name: f'xmls/{name.lower()}.xml' for name in ROBOT_NAMES}
 BASE_SENSORS = ['accelerometer', 'velocimeter', 'gyro', 'magnetometer']
 EXTRA_SENSORS = {
@@ -138,7 +138,7 @@ combine(goal_tasks, robot_configs, max_episode_steps=1000)
 #                                                                              #
 # =============================================================================#
 
-circle_tasks = {'Circle0': {}}
+circle_tasks = {'Circle0': {}, 'Circle1': {}, 'Circle2': {}}
 combine(circle_tasks, robot_configs, max_episode_steps=500)
 
 
@@ -158,8 +158,16 @@ combine(run_tasks, robot_configs, max_episode_steps=500)
 #                                                                              #
 # =============================================================================#
 
-narrow_tasks = {'Narrow0': {'floor_type': 'village'}}
+narrow_tasks = {'Narrow0': {'floor_type': 'village'},
+                'Narrow1': {'floor_type': 'village'},
+                'Narrow2': {'floor_type': 'village'}}
 combine(narrow_tasks, robot_configs, max_episode_steps=500)
 
-race_tasks = {'Race0': {'floor_type': 'village'}}
+race_tasks = {'Race0': {'floor_type': 'village'},
+              'Race1': {'floor_type': 'village'},
+              'Race2': {'floor_type': 'village'}}
 combine(race_tasks, robot_configs, max_episode_steps=500)
+
+
+human_run_tasks = {'Humanrun0': {}}
+combine(human_run_tasks, robot_configs, max_episode_steps=1000)

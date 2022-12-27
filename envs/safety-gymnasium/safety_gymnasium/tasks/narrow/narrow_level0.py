@@ -16,11 +16,11 @@
 
 import numpy as np
 
-from safety_gymnasium.assets.geoms import Apples, Oranges, Hazards
+from safety_gymnasium.assets.geoms import Apples, Oranges
 from safety_gymnasium.bases.base_task import BaseTask
 
 class NarrowLevel0(BaseTask):
-    """A robot can navigate to two goals, while it must balance reward and cost."""
+    """A robot can navigate to two goals."""
 
     def __init__(self, config):
         super().__init__(config=config)
@@ -58,14 +58,7 @@ class NarrowLevel0(BaseTask):
             'locations': [(self.palcement_cal_factor * 0.95, self.palcement_cal_factor * 0)],
             'is_meshed': True,
         }
-        hazard_config = {
-            'num': 1,
-            'size': self.palcement_cal_factor * 0.05,
-            'keepout': 0.0,
-            'locations': [(self.palcement_cal_factor * -0.65, self.palcement_cal_factor * 0)],
-            'is_meshed': True,
-        }
-        self.add_geoms(Apples(**apple_config), Oranges(**orange_config), Hazards(**hazard_config))
+        self.add_geoms(Apples(**apple_config), Oranges(**orange_config))
         self._is_load_static_geoms = True
 
         self.specific_agent_config()
@@ -144,9 +137,3 @@ class NarrowLevel0(BaseTask):
         ''' Helper to get goal position from layout '''
         # pylint: disable-next=no-member
         return [self.data.body(f'orange{i}').xpos.copy() for i in range(self.oranges.num)]
-
-    @property
-    def hazards_pos(self):
-        """Helper to get the hazards positions from layout."""
-        # pylint: disable-next=no-member
-        return [self.data.body(f'hazard{i}').xpos.copy() for i in range(self.hazards.num)]

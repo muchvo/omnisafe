@@ -250,10 +250,15 @@ class World:  # pylint: disable=too-many-instance-attributes
                 **pos, **xyaxes
             )
         )
-        worldbody['body'][0]['camera'] = [
-            worldbody['body'][0]['camera'],
-            track_camera['b']['camera'],
-        ]
+        if 'camera' in worldbody['body'][0]:
+            worldbody['body'][0]['camera'] = [
+                worldbody['body'][0]['camera'],
+                track_camera['b']['camera'],
+            ]
+        else:
+            worldbody['body'][0]['camera'] = [
+                track_camera['b']['camera'],
+            ]
 
         # Add objects to the XML dictionary
         for name, object in self.objects.items():  # pylint: disable=redefined-builtin, no-member

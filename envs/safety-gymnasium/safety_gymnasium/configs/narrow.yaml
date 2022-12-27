@@ -90,3 +90,9 @@
       mesh: wooden_wall1
       material: wooden_wall1
       group: 2
+
+# None of config for level1
+- {}
+
+# None of config for level2
+- {}

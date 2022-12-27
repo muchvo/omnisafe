@@ -36,22 +36,10 @@ class RunLevel0(BaseTask):
         self.reward_clip = None
         self.reward_factor = 60.0
 
-        self.add_geoms(Sigwalls(lenth=17.5, locations=((-0.5, 0), (0.5, 0))))
+        self.add_geoms(Sigwalls(size=17.5, locate_factor=0.5, is_constrained=True))
 
         self.specific_agent_config()
         self.old_potential = None
-
-    def calculate_cost(self):
-        """There are costs only when agent go out of the boundary."""
-        # pylint: disable-next=no-member
-        mujoco.mj_forward(self.model, self.data)  # Ensure positions and contacts are correct
-        cost = {}
-
-        cost['cost_out_of_boundary'] = self.robot_pos[0] > 0.5 or self.robot_pos[0] < -0.5
-
-        # Sum all costs into single total cost
-        cost['cost'] = sum(v for k, v in cost.items() if k.startswith('cost_'))
-        return cost
 
     def calculate_reward(self):
         """The agent should run as far as possible."""

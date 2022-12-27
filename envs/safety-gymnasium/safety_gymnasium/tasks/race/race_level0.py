@@ -14,11 +14,11 @@
 # ==============================================================================
 """Race level 0."""
 
-from safety_gymnasium.assets.geoms import Goal, Hazards
+from safety_gymnasium.assets.geoms import Goal
 from safety_gymnasium.bases.base_task import BaseTask
 
 class RaceLevel0(BaseTask):
-    """A robot must navigate to a goal, while avoid hazards."""
+    """A robot must navigate to a goal."""
 
     def __init__(self, config):
         super().__init__(config=config)
@@ -29,8 +29,8 @@ class RaceLevel0(BaseTask):
 
         self.palcement_cal_factor = 3.5
         robot_placements_width = self.palcement_cal_factor * 0.05
-        robot_placements_lenth = self.palcement_cal_factor * 0.01
-        center_x, center_y = self.palcement_cal_factor * -0.7, self.palcement_cal_factor * -0.9
+        robot_placements_lenth = self.palcement_cal_factor * 0.1
+        center_x, center_y = self.palcement_cal_factor * -0.65, self.palcement_cal_factor * 0.3
         self.robot.placements = [(center_x - robot_placements_width / 2, center_y - robot_placements_lenth / 2, \
                                 center_x + robot_placements_width / 2, center_y + robot_placements_lenth / 2)]
         self.robot.keepout = 0
@@ -48,15 +48,7 @@ class RaceLevel0(BaseTask):
             'locations': [(self.palcement_cal_factor * 0.9, self.palcement_cal_factor * 0.3)],
             'is_meshed': True,
         }
-        hazard_config = {
-            'num': 7,
-            'size': self.palcement_cal_factor * 0.05,
-            'keepout': 0.0,
-            'locations': [(self.palcement_cal_factor * (-0.45 + 0.2 * i),
-            self.palcement_cal_factor * (0.3 - 0.05 * (-1) ** i)) for i in range(7)],
-            'is_meshed': True,
-        }
-        self.add_geoms(Goal(**goal_config), Hazards(**hazard_config))
+        self.add_geoms(Goal(**goal_config))
         self._is_load_static_geoms = True
 
         self.specific_agent_config()
@@ -102,9 +94,3 @@ class RaceLevel0(BaseTask):
     def goal_pos(self):
         """Helper to get goal position from layout."""
         return [self.data.body('goal').xpos.copy()]
-
-    @property
-    def hazards_pos(self):
-        """Helper to get the hazards positions from layout."""
-        # pylint: disable-next=no-member
-        return [self.data.body(f'hazard{i}').xpos.copy() for i in range(self.hazards.num)]
