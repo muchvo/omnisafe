@@ -27,15 +27,7 @@ class CircleLevel0(BaseTask):
 
         self.num_steps = 500
 
-        robot_placements_square = 0.8
-        self.robot.placements = [
-            (
-                -robot_placements_square,
-                -robot_placements_square,
-                robot_placements_square,
-                robot_placements_square,
-            )
-        ]
+        self.robot.placements = [(-0.8, -0.8, 0.8, 0.8)]
         self.robot.keepout = 0
 
         self.lidar_max_dist = 6
