@@ -57,10 +57,13 @@ class Robot:  # pylint: disable=too-many-instance-attributes
         self.nv = self.model.nv  # pylint: disable=invalid-name
         # Needed to figure out action space
         self.nu = self.model.nu  # pylint: disable=invalid-name
+        self.nbody = self.model.nbody  # pylint: disable=invalid-name
         # Needed to figure out observation space
         # See engine.py for an explanation for why we treat these separately
         self.hinge_pos_names = []
         self.hinge_vel_names = []
+        self.freejoint_pos_name = None
+        self.freejoint_qvel_name = None
         self.ballquat_names = []
         self.ballangvel_names = []
         self.sensor_dim = {}
@@ -99,3 +102,12 @@ class Robot:  # pylint: disable=too-many-instance-attributes
                     # (That we are invariant to relative whole-world transforms)
                     # If slide joints are added we should ensure this stays true!
                     raise ValueError('Slide joints in robots not currently supported')
+            elif (
+                # pylint: disable-next=no-member
+                self.model.sensor(id).objtype
+                == mujoco.mjtObj.mjOBJ_SITE # pylint: disable=no-member
+            ):  # pylint: disable=no-member
+                if name == 'robot_pos':
+                    self.freejoint_pos_name = name
+                elif name == 'robot_qvel':
+                    self.freejoint_qvel_name = name

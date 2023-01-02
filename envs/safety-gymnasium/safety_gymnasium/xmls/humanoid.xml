@@ -21,18 +21,17 @@
 
   <worldbody>
     <geom name="floor" type="plane" conaffinity="1" size="100 100 .2" />
-    <!-- <light name="debug" pos="0 0 3.236151"/> -->
 
-    <body name="pelvis" pos="0 0 1" childclass="body">
-      <freejoint name="root"/>
-      <site name="root" class="force-torque"/>
+    <body name="robot" pos="0 0 1" childclass="body">
+      <freejoint name="robot"/>
+      <site name="robot" class="force-torque"/>
       <geom name="pelvis" type="sphere" pos="0 0 0.07" size=".09" density="2226"/>
       <geom name="upper_waist" type="sphere" pos="0 0 0.205" size="0.07" density="2226"/>
       <site name="pelvis" class="touch" type="sphere" pos="0 0 0.07" size="0.091"/>
       <site name="upper_waist" class="touch" type="sphere" pos="0 0 0.205" size="0.071"/>
 
       <body name="torso" pos="0 0 0.236151">
-        <light name="top" pos="0 0 2" mode="trackcom"/>
+        <!-- <light name="top" pos="0 0 2" mode="trackcom"/> -->
         <camera name="back" pos="-3 0 1" xyaxes="0 -1 0 1 0 2" mode="trackcom"/>
         <camera name="side" pos="0 -3 1" xyaxes="1 0 0 0 1 2" mode="trackcom"/>
         <!-- <joint name="abdomen_x" pos="0 0 0" axis="1 0 0" range="-60 60" stiffness="1000" damping="100" armature=".02"/> -->
@@ -176,12 +175,47 @@
   </actuator>
 
   <sensor>
-    <subtreelinvel name="pelvis_subtreelinvel" body="pelvis"/>
-    <accelerometer name="root_accel"    site="root"/>
-    <velocimeter name="root_vel"        site="root"/>
-    <gyro name="root_gyro"              site="root"/>
+    <!-- <subtreelinvel name="pelvis_subtreelinvel" body="pelvis"/> -->
+    <accelerometer name="accelerometer"    site="robot"/>
+    <velocimeter name="velocimeter"        site="robot"/>
+    <gyro name="gyro"              site="robot"/>
+    <magnetometer name="magnetometer" site="robot"/>
 
-    <force name="left_ankle_force"       site="left_ankle"/>
+    <subtreecom body="robot" name="subtreecom"/>
+    <subtreelinvel body="robot" name="subtreelinvel"/>
+    <subtreeangmom body="robot" name="subtreeangmom"/>
+
+    <framepos objtype="site" objname="robot" name="robot_pos"/>
+
+    <jointpos joint="abdomen_z" name="abdomen_z_pos"/>
+    <jointpos joint="neck_z" name="neck_z_pos"/>
+    <jointpos joint="right_shoulder_y" name="right_shoulder_y_pos"/>
+    <jointpos joint="left_shoulder_y" name="left_shoulder_y_pos"/>
+    <jointpos joint="right_hip_y" name="right_hip_y_pos"/>
+    <jointpos joint="right_hip_z" name="right_hip_z_pos"/>
+    <jointpos joint="right_knee" name="right_knee_pos"/>
+    <jointpos joint="right_ankle_y" name="right_ankle_y_pos"/>
+    <jointpos joint="left_hip_y" name="left_hip_y_pos"/>
+    <jointpos joint="left_hip_z" name="left_hip_z_pos"/>
+    <jointpos joint="left_knee" name="left_knee_pos"/>
+    <jointpos joint="left_ankle_y" name="left_ankle_y_pos"/>
+
+    <frameangvel objtype="site" objname="robot" name="robot_qvel"/>
+
+    <jointvel joint="abdomen_z" name="abdomen_z_vel"/>
+    <jointvel joint="neck_z" name="neck_z_vel"/>
+    <jointvel joint="right_shoulder_y" name="right_shoulder_y_vel"/>
+    <jointvel joint="left_shoulder_y" name="left_shoulder_y_vel"/>
+    <jointvel joint="right_hip_y" name="right_hip_y_vel"/>
+    <jointvel joint="right_hip_z" name="right_hip_z_vel"/>
+    <jointvel joint="right_knee" name="right_knee_vel"/>
+    <jointvel joint="right_ankle_y" name="right_ankle_y_vel"/>
+    <jointvel joint="left_hip_y" name="left_hip_y_vel"/>
+    <jointvel joint="left_hip_z" name="left_hip_z_vel"/>
+    <jointvel joint="left_knee" name="left_knee_vel"/>
+    <jointvel joint="left_ankle_y" name="left_ankle_y_vel"/>
+
+    <!-- <force name="left_ankle_force"       site="left_ankle"/>
     <force name="right_ankle_force"      site="right_ankle"/>
     <force name="left_knee_force"        site="left_knee"/>
     <force name="right_knee_force"       site="right_knee"/>
@@ -210,7 +244,7 @@
     <touch name="right_foot_touch"       site="right_foot"/>
     <touch name="left_thigh_touch"       site="left_thigh"/>
     <touch name="left_shin_touch"        site="left_shin"/>
-    <touch name="left_foot_touch"        site="left_foot"/>
+    <touch name="left_foot_touch"        site="left_foot"/> -->
   </sensor>
 
 </mujoco>

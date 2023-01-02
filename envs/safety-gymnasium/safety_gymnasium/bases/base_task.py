@@ -86,7 +86,9 @@ class BaseTask(
         self._seed = None  # Random state seed (avoid name conflict with self.seed)
 
         self.robot = Robot(self.robot_base)  # pylint: disable=no-member
-        self.action_space = spaces.Box(-1, 1, (self.robot.nu,), dtype=np.float64)
+        bounds = self.robot.model.actuator_ctrlrange.copy().astype(np.float32)
+        low, high = bounds.T
+        self.action_space = spaces.Box(low=low, high=high,  dtype=np.float64)
         self.action_noise = 0.0  # Magnitude of independent per-component gaussian action noise
 
         # Obstacles which are added in environments.
@@ -183,7 +185,16 @@ class BaseTask(
             width, height = self.vision_size
             rows, cols = height, width
             self.vision_size = (rows, cols)
-            obs_space_dict['vision'] = gymnasium.spaces.Box(
+            obs_space_dict['vision_front'] = gymnasium.spaces.Box(
+                0, 255, self.vision_size + (3,), dtype=np.uint8
+            )
+            obs_space_dict['vision_back'] = gymnasium.spaces.Box(
+                0, 255, self.vision_size + (3,), dtype=np.uint8
+            )
+            obs_space_dict['vision_left'] = gymnasium.spaces.Box(
+                0, 255, self.vision_size + (3,), dtype=np.uint8
+            )
+            obs_space_dict['vision_right'] = gymnasium.spaces.Box(
                 0, 255, self.vision_size + (3,), dtype=np.uint8
             )
 
@@ -213,6 +224,16 @@ class BaseTask(
             obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
         for sensor in self.robot.ballangvel_names:
             obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (3,), dtype=np.float64)
+        if self.robot.freejoint_pos_name:
+            sensor = self.robot.freejoint_pos_name
+            obs_space_dict[sensor] = gymnasium.spaces.Box(
+                -np.inf, np.inf, (3,), dtype=np.float64
+            )
+        if self.robot.freejoint_qvel_name:
+            sensor = self.robot.freejoint_qvel_name
+            obs_space_dict[sensor] = gymnasium.spaces.Box(
+                -np.inf, np.inf, (3,), dtype=np.float64
+            )
         # Angular positions have wraparound effects, so output something more friendly
         if self.sensors_angle_components:
             # Single joints are turned into sin(x), cos(x) pairs
@@ -423,7 +444,10 @@ class BaseTask(
                 obs[name] = self.obs_lidar(getattr(self, mocap.name + '_pos'), mocap.group)
 
         if self.observe_vision:
-            obs['vision'] = self.obs_vision()
+            obs['vision_front'] = self.obs_vision(position='vision_front')
+            obs['vision_back'] = self.obs_vision(position='vision_back')
+            obs['vision_left'] = self.obs_vision(position='vision_left')
+            obs['vision_right'] = self.obs_vision(position='vision_right')
         if self.observation_flatten:
             flat_obs = np.zeros(self.obs_flat_size)
             offset = 0
@@ -448,6 +472,12 @@ class BaseTask(
         for sensor in self.robot.hinge_vel_names:
             obs[sensor] = self.world.get_sensor(sensor)
         for sensor in self.robot.ballangvel_names:
+            obs[sensor] = self.world.get_sensor(sensor)
+        if self.robot.freejoint_pos_name:
+            sensor = self.robot.freejoint_pos_name
+            obs[sensor] = self.world.get_sensor(sensor)
+        if self.robot.freejoint_qvel_name:
+            sensor = self.robot.freejoint_qvel_name
             obs[sensor] = self.world.get_sensor(sensor)
         # Process angular position sensors
         if self.sensors_angle_components:
@@ -570,11 +600,11 @@ class BaseTask(
         assert vec.shape == (self.compass_shape,), f'Bad vec {vec}'
         return vec
 
-    def obs_vision(self):
+    def obs_vision(self, position='vision_front'):
         """Return pixels from the robot camera."""
         rows, cols = self.vision_size
         width, height = cols, rows
-        vision = self.render(width, height, mode='rgb_array', camera_name='vision', cost={})
+        vision = self.render(width, height, mode='rgb_array', camera_name=position, cost={})
         return vision
 
     def ego_xy(self, pos):

@@ -32,26 +32,47 @@ def run_random(env_name):
     # obs, _ = env.reset(seed=0)
     terminated, truncated = False, False
     ep_ret, ep_cost = 0, 0
-    render_list = []
+    render_list = {'front': [], 'back': [], 'left': [], 'right': []}
     for i in range(1001):  # pylint: disable=unused-variable
         if terminated or truncated:
             print(f'Episode Return: {ep_ret} \t Episode Cost: {ep_cost}')
             ep_ret, ep_cost = 0, 0
             obs, _ = env.reset()
             save_video(
-                frames=render_list,
+                frames=render_list['front'],
                 video_folder=DIR,
-                name_prefix='test_vision_output',
+                name_prefix='test_front_vision_output',
                 fps=30,
             )
-            render_list = []
+            save_video(
+                frames=render_list['back'],
+                video_folder=DIR,
+                name_prefix='test_back_vision_output',
+                fps=30,
+            )
+            save_video(
+                frames=render_list['left'],
+                video_folder=DIR,
+                name_prefix='test_left_vision_output',
+                fps=30,
+            )
+            save_video(
+                frames=render_list['right'],
+                video_folder=DIR,
+                name_prefix='test_right_vision_output',
+                fps=30,
+            )
+            render_list = {'front': [], 'back': [], 'left': [], 'right': []}
         assert env.observation_space.contains(obs)
         act = env.action_space.sample()
         assert env.action_space.contains(act)
         # Use the environment's built_in max_episode_steps
         if hasattr(env, '_max_episode_steps'):  # pylint: disable=protected-access
             max_ep_len = env._max_episode_steps  # pylint: disable=unused-variable,protected-access
-        render_list.append(obs['vision'])
+        render_list['front'].append(obs['vision_front'])
+        render_list['back'].append(obs['vision_back'])
+        render_list['left'].append(obs['vision_left'])
+        render_list['right'].append(obs['vision_right'])
         # pylint: disable-next=unused-variable
         obs, reward, cost, terminated, truncated, info = env.step(act)
 
@@ -62,6 +83,6 @@ def run_random(env_name):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--env', default='SafetyRacecarGoal2Vision-v0')
+    parser.add_argument('--env', default='SafetyCarGoal2Vision-v0')
     args = parser.parse_args()
     run_random(args.env)
