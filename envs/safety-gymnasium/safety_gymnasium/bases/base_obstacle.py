@@ -66,8 +66,8 @@ class BaseObstacle(abc.ABC):
     def _specific_agent_config(self):
         """Modify properties according to specific agent."""
 
-    @abc.abstractmethod
     @property
+    @abc.abstractmethod
     def pos(self):
         """Get the position of the obstacle."""
         raise NotImplementedError
