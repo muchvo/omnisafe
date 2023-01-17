@@ -178,7 +178,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
                     if self.env.obs_normalizer is not None:
                         obs = self.env.obs_normalizer.normalize(obs)
                     act = self.actor.predict(
-                        self.obs_oms(torch.as_tensor(obs, dtype=torch.float32)),
+                        torch.as_tensor(obs, dtype=torch.float32),
                         deterministic=True,
                         need_log_prob=False,
                     )
@@ -326,11 +326,14 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
 
     def _make_env(self, env_id, **env_kwargs):
         """Make wrapped environment."""
+        env_cfgs = {'num_envs': 1, 'standardized_obs': False, 'standardized_rew': False}
+        env_cfgs = dict2namedtuple(env_cfgs)
         if self.cfg is not None and 'env_cfgs' in self.cfg:
+            # self.cfg['env_cfgs']['num_envs']= 1
             env_cfgs = dict2namedtuple(self.cfg['env_cfgs'])
 
         if self.algo_name in ['PPOSimmerPid', 'PPOSimmerQ', 'PPOLagSimmerQ', 'PPOLagSimmerPid']:
-            return SimmerEnvWrapper(env_id, env_cfgs, **env_kwargs)
+            return SimmerWrapper(env_id, env_cfgs, **env_kwargs)
         if self.algo_name in ['PPOSaute', 'PPOLagSaute']:
-            return SauteEnvWrapper(env_id, env_cfgs, **env_kwargs)
-        return EnvWrapper(env_id, **env_kwargs)
+            return SauteWrapper(env_id, env_cfgs, **env_kwargs)
+        return EnvWrapper(env_id, env_cfgs, **env_kwargs)

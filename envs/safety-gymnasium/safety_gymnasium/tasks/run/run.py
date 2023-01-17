@@ -50,7 +50,9 @@ class RunLevel0(BaseTask):
         return reward
 
     def specific_reset(self):
-        self.old_potential = (-np.linalg.norm(self.agent.pos[:2] - self.goal_pos) * self.reward_factor)
+        self.old_potential = (
+            -np.linalg.norm(self.agent.pos[:2] - self.goal_pos) * self.reward_factor
+        )
 
     def specific_step(self):
         pass
