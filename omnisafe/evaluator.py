@@ -61,6 +61,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
         self.model_name = None
         self.algo_name = None
         self.model_params = None
+        self.seed = None
 
         # set the render mode
         self.play = play
@@ -109,6 +110,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
         # make the environment
         env_id = self.cfg['env_id']
         self.env = self._make_env(env_id, render_mode=self.render_mode)
+        self.seed = self.cfg['env_id']
 
         # make the actor
         observation_space = self.env.observation_space
@@ -176,7 +178,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
                     if self.env.obs_normalizer is not None:
                         obs = self.env.obs_normalizer.normalize(obs)
                     act = self.actor.predict(
-                        torch.as_tensor(obs, dtype=torch.float32),
+                        self.obs_oms(torch.as_tensor(obs, dtype=torch.float32)),
                         deterministic=True,
                         need_log_prob=False,
                     )
@@ -194,20 +196,19 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
         print(f'Average episode reward: {np.mean(episode_rewards):.3f}')
         print(f'Average episode cost: {np.mean(episode_costs):.3f}')
         print(f'Average episode length: {np.mean(episode_lengths):.3f}')
-        return (
-            episode_rewards,
-            episode_costs,
-        )
+        return episode_rewards, episode_costs, episode_lengths
 
     def render(  # pylint: disable=too-many-locals,too-many-arguments,too-many-branches,too-many-statements
         self,
         num_episode: int = 0,
+        seed: int = None,
         play=True,
         save_replay_path: str = None,
         camera_name: str = None,
         camera_id: str = None,
         width: int = None,
         height: int = None,
+        cost_criteria: float = 1.0,
     ):
         """Render the environment for one episode.
         Args:
@@ -256,56 +257,80 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes
             self.env = self._make_env(**env_kwargs)
             self.render_mode = 'rgb_array'
 
+        episode_rewards = []
+        episode_costs = []
+        episode_lengths = []
         horizon = self.env.rollout_data.max_ep_len
-        frames = []
-        obs, _ = self.env.reset()
 
+        frames = []
+        if seed:
+            obs, _ = self.env.reset(seed=seed)
+        else:
+            obs, _ = self.env.reset(seed=self.seed)
+        ep_ret, ep_cost = 0.0, 0.0
         if self.render_mode == 'human':
             self.env.render()
         elif self.render_mode == 'rgb_array':
             frames.append(self.env.render())
-        if self.env.obs_normalizer is not None:
-            self.env.obs_normalizer.load_state_dict(self.model_params['obs_normalizer'])
-        for episode_idx in range(num_episode):
-            for _ in range(horizon):
-                with torch.no_grad():
-                    if self.env.obs_normalizer is not None:
-                        obs = self.env.obs_normalizer.normalize(obs)
-                    act = self.actor.predict(
-                        torch.as_tensor(obs, dtype=torch.float32), deterministic=True
+
+        if not os.path.exists(save_replay_path):
+            os.makedirs(save_replay_path, exist_ok=True)
+        with open(os.path.join(save_replay_path, 'log.txt'), mode='w', encoding='UTF-8') as log:
+            for episode_idx in range(num_episode):
+                for step in range(horizon):
+                    with torch.no_grad():
+                        if self.env.obs_normalizer is not None:
+                            obs = self.env.obs_normalizer.normalize(obs)
+                        act = self.actor.predict(
+                            torch.as_tensor(obs, dtype=torch.float32),
+                            deterministic=True,
+                            need_log_prob=False,
+                        )
+                    obs, rew, cost, done, truncated, _ = self.env.step(act.numpy())
+                    ep_ret += rew
+                    ep_cost += (cost_criteria**step) * cost
+
+                    if self.render_mode == 'rgb_array':
+                        frames.append(self.env.render())
+
+                    if done or truncated:
+                        episode_rewards.append(ep_ret)
+                        episode_costs.append(ep_cost)
+                        episode_lengths.append(step + 1)
+                        print(
+                            f'ep:{episode_idx} rew:{ep_ret} cost:{ep_cost} lenth:{step + 1}',
+                            file=log,
+                        )
+                        break
+
+                if self.render_mode == 'rgb_array_list':
+                    frames = self.env.render()
+
+                if save_replay_path is not None:
+                    save_video(
+                        frames,
+                        save_replay_path,
+                        fps=self.env.env.metadata['render_fps'],
+                        episode_trigger=lambda x: True,
+                        episode_index=episode_idx,
+                        name_prefix='eval',
                     )
-                obs, _, _, done, truncated, _ = self.env.step(act.numpy())
-                if done[0] or truncated[0]:
-                    break
+                obs, _ = self.env.reset()
+                ep_ret, ep_cost = 0.0, 0.0
+                frames = []
 
-                if self.render_mode == 'rgb_array':
-                    frames.append(self.env.render())
-
-            if self.render_mode == 'rgb_array_list':
-                frames = self.env.render()
-
-            if save_replay_path is not None:
-                save_video(
-                    frames,
-                    save_replay_path,
-                    fps=self.env.env.metadata['render_fps'],
-                    episode_trigger=lambda x: True,
-                    episode_index=episode_idx,
-                    name_prefix='eval',
-                )
-            self.env.reset()
-            frames = []
+            print('Evaluation results:', file=log)
+            print(f'Average episode reward: {np.mean(episode_rewards):.3f}', file=log)
+            print(f'Average episode cost: {np.mean(episode_costs):.3f}', file=log)
+            print(f'Average episode length: {np.mean(episode_lengths):.3f}', file=log)
 
     def _make_env(self, env_id, **env_kwargs):
         """Make wrapped environment."""
-        env_cfgs = {'num_envs': 1, 'standardized_obs': False, 'standardized_rew': False}
-        env_cfgs = dict2namedtuple(env_cfgs)
         if self.cfg is not None and 'env_cfgs' in self.cfg:
-            # self.cfg['env_cfgs']['num_envs']= 1
             env_cfgs = dict2namedtuple(self.cfg['env_cfgs'])
 
         if self.algo_name in ['PPOSimmerPid', 'PPOSimmerQ', 'PPOLagSimmerQ', 'PPOLagSimmerPid']:
-            return SimmerWrapper(env_id, env_cfgs, **env_kwargs)
+            return SimmerEnvWrapper(env_id, env_cfgs, **env_kwargs)
         if self.algo_name in ['PPOSaute', 'PPOLagSaute']:
-            return SauteWrapper(env_id, env_cfgs, **env_kwargs)
-        return EnvWrapper(env_id, env_cfgs, **env_kwargs)
+            return SauteEnvWrapper(env_id, env_cfgs, **env_kwargs)
+        return EnvWrapper(env_id, **env_kwargs)

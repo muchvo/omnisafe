@@ -1,0 +1,98 @@
+# Copyright 2022 OmniSafe Team. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+- wooden_map_walls:
+    up_wall:
+      name: up_wall
+      pos: [0, 3.7, 0]
+      euler: [1.57, 0, 0]
+      type: mesh
+      mesh: wooden_wall3
+      material: wooden_wall3
+      group: 2
+
+    down_wall:
+      name: down_wall
+      pos: [0, -3.7, 0]
+      euler: [1.57, 0, 0]
+      type: mesh
+      mesh: wooden_wall3
+      material: wooden_wall3
+      group: 2
+
+    left_wall:
+      name: left_wall
+      pos: [-3.7, 0, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall3
+      material: wooden_wall3
+      group: 2
+
+    right_wall:
+      name: right_wall
+      pos: [3.7, 0, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall3
+      material: wooden_wall3
+      group: 2
+
+  narrow_walls:
+    narrow_wall_left_up:
+      name: narrow_wall_left_up
+      size: [0.175, 1.6625, 0.5]
+      pos: [-2.275, 1.8375, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall1
+      material: wooden_wall1
+      group: 2
+
+    narrow_wall_left_down:
+      name: narrow_wall_left_down
+      size: [0.175, 1.6625, 0.5]
+      pos: [-2.275, -1.8375, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall1
+      material: wooden_wall1
+      group: 2
+
+    narrow_wall_right_up:
+      name: narrow_wall_right_up
+      size: [0.175, 1.6625, 0.5]
+      pos: [2.275, 1.8375, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall1
+      material: wooden_wall1
+      group: 2
+
+    narrow_wall_right_down:
+      name: narrow_wall_right_down
+      size: [0.175, 1.6625, 0.5]
+      pos: [2.275, -1.8375, 0]
+      euler: [1.57, 1.57, 0]
+      type: mesh
+      mesh: wooden_wall1
+      material: wooden_wall1
+      group: 2
+
+# None of config for level1
+- {}
+
+# None of config for level2
+- {}

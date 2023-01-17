@@ -21,7 +21,7 @@ import helpers
 
 @helpers.parametrize(
     agent_id=['Point', 'Car', 'Racecar'],
-    env_id=['Goal', 'Push', 'Button', 'Circle'],
+    env_id=['Goal', 'Push', 'Button', 'Circle', 'Race', 'Narrow'],
     level=['0', '1', '2'],
     render_mode=['rgb_array', 'depth_array'],
 )
