@@ -19,6 +19,7 @@ from safety_gymnasium.agents.car import Car
 from safety_gymnasium.agents.humanoid import Humanoid
 from safety_gymnasium.agents.point import Point
 from safety_gymnasium.agents.racecar import Racecar
+from safety_gymnasium.agents.panda import Panda
 
 
 Registry = {
@@ -27,4 +28,5 @@ Registry = {
     'point': Point,
     'racecar': Racecar,
     'humanoid': Humanoid,
+    'panda': Panda,
 }

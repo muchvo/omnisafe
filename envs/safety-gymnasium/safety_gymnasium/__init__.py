@@ -22,7 +22,7 @@ from safety_gymnasium.utils.registration import make, register
 __all__ = ['register', 'make']
 
 VERSION = 'v0'
-ROBOT_NAMES = ('Point', 'Car', 'Racecar', 'Ant', 'Humanoid')
+ROBOT_NAMES = ('Point', 'Car', 'Racecar', 'Ant', 'Humanoid', 'Panda')
 MAKE_VISION_ENVIRONMENTS = True
 MAKE_DEBUG_ENVIRONMENTS = True
 
