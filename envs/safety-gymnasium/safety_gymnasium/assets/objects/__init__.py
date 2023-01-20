@@ -17,6 +17,9 @@
 # Extra objects to add to the scene
 from safety_gymnasium.assets.objects.push_box import PushBox
 from safety_gymnasium.assets.objects.vase import Vases
+from safety_gymnasium.assets.objects.block import Blocks
+from safety_gymnasium.assets.objects.bottle import Bottle
+from safety_gymnasium.assets.objects.box import Box
 
 
-OBJS_REGISTER = [PushBox, Vases]
+OBJS_REGISTER = [PushBox, Vases, Blocks, Bottle, Box]

@@ -365,9 +365,6 @@ class Underlying(abc.ABC):  # pylint: disable=too-many-instance-attributes
 
         self._get_viewer(mode)
 
-        # Turn all the geom groups on
-        self.viewer.vopt.geomgroup[:] = 1
-
         # Lidar and Compass markers
         if self.render_conf.lidar_markers:
             offset = (
@@ -423,8 +420,9 @@ class Underlying(abc.ABC):  # pylint: disable=too-many-instance-attributes
                 self.viewer = RenderContextOffscreen(self.model, self.data)
             else:
                 raise AttributeError(f'Unexpected mode: {mode}')
+            # Turn all the geom groups on
+            self.viewer.vopt.geomgroup[:] = 1
 
-            # self.viewer_setup()
             self._viewers[mode] = self.viewer
 
         return self.viewer

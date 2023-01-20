@@ -37,6 +37,8 @@ class Panda(BaseAgent):
             self.__class__.__name__, random_generator, placements, locations, keepout, rot
         )
 
+        self.sensor_conf.sensors = ('left_finger_pos', )
+
     def is_alive(self):
         """Panda runs until timeout."""
         return True

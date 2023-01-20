@@ -22,7 +22,7 @@ from safety_gymnasium.utils.registration import make, register
 __all__ = ['register', 'make']
 
 VERSION = 'v0'
-ROBOT_NAMES = ('Point', 'Car', 'Racecar', 'Ant', 'Humanoid', 'Panda')
+ROBOT_NAMES = ('Point', 'Car', 'Racecar', 'Ant', 'Humanoid')
 MAKE_VISION_ENVIRONMENTS = True
 MAKE_DEBUG_ENVIRONMENTS = True
 
@@ -197,3 +197,23 @@ register(
     entry_point='safety_gymnasium.tasks.safety_velocity.safety_humanoid_velocity:SafetyHumanoidVelocityEnv',
     max_episode_steps=1000,
 )
+
+
+# =============================================================================#
+#                                                                              #
+#       Manipulation Environments                                                    #
+#                                                                              #
+# =============================================================================#
+
+
+extract_tasks = {
+    'Extract0': {},
+}
+combine(extract_tasks, ('Panda', ), max_episode_steps=500)
+
+pick_and_place_tasks = {
+    'PickAndPlace0': {},
+    'PickAndPlace1': {},
+    'PickAndPlace2': {},
+}
+combine(pick_and_place_tasks, ('Panda', ), max_episode_steps=500)

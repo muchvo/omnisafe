@@ -185,35 +185,35 @@
     <subtreelinvel body="robot" name="subtreelinvel"/>
     <subtreeangmom body="robot" name="subtreeangmom"/>
 
-    <framepos objtype="site" objname="robot" name="robot_pos"/>
+    <framepos objtype="site" objname="robot" name="robot_zpos"/>
 
-    <jointpos joint="abdomen_z" name="abdomen_z_pos"/>
-    <jointpos joint="neck_z" name="neck_z_pos"/>
-    <jointpos joint="right_shoulder_y" name="right_shoulder_y_pos"/>
-    <jointpos joint="left_shoulder_y" name="left_shoulder_y_pos"/>
-    <jointpos joint="right_hip_y" name="right_hip_y_pos"/>
-    <jointpos joint="right_hip_z" name="right_hip_z_pos"/>
-    <jointpos joint="right_knee" name="right_knee_pos"/>
-    <jointpos joint="right_ankle_y" name="right_ankle_y_pos"/>
-    <jointpos joint="left_hip_y" name="left_hip_y_pos"/>
-    <jointpos joint="left_hip_z" name="left_hip_z_pos"/>
-    <jointpos joint="left_knee" name="left_knee_pos"/>
-    <jointpos joint="left_ankle_y" name="left_ankle_y_pos"/>
+    <jointpos joint="abdomen_z" name="abdomen_z_qpos"/>
+    <jointpos joint="neck_z" name="neck_z_qpos"/>
+    <jointpos joint="right_shoulder_y" name="right_shoulder_y_qpos"/>
+    <jointpos joint="left_shoulder_y" name="left_shoulder_y_qpos"/>
+    <jointpos joint="right_hip_y" name="right_hip_y_qpos"/>
+    <jointpos joint="right_hip_z" name="right_hip_z_qpos"/>
+    <jointpos joint="right_knee" name="right_knee_qpos"/>
+    <jointpos joint="right_ankle_y" name="right_ankle_y_qpos"/>
+    <jointpos joint="left_hip_y" name="left_hip_y_qpos"/>
+    <jointpos joint="left_hip_z" name="left_hip_z_qpos"/>
+    <jointpos joint="left_knee" name="left_knee_qpos"/>
+    <jointpos joint="left_ankle_y" name="left_ankle_y_qpos"/>
 
     <frameangvel objtype="site" objname="robot" name="robot_qvel"/>
 
-    <jointvel joint="abdomen_z" name="abdomen_z_vel"/>
-    <jointvel joint="neck_z" name="neck_z_vel"/>
-    <jointvel joint="right_shoulder_y" name="right_shoulder_y_vel"/>
-    <jointvel joint="left_shoulder_y" name="left_shoulder_y_vel"/>
-    <jointvel joint="right_hip_y" name="right_hip_y_vel"/>
-    <jointvel joint="right_hip_z" name="right_hip_z_vel"/>
-    <jointvel joint="right_knee" name="right_knee_vel"/>
-    <jointvel joint="right_ankle_y" name="right_ankle_y_vel"/>
-    <jointvel joint="left_hip_y" name="left_hip_y_vel"/>
-    <jointvel joint="left_hip_z" name="left_hip_z_vel"/>
-    <jointvel joint="left_knee" name="left_knee_vel"/>
-    <jointvel joint="left_ankle_y" name="left_ankle_y_vel"/>
+    <jointvel joint="abdomen_z" name="abdomen_z_qvel"/>
+    <jointvel joint="neck_z" name="neck_z_qvel"/>
+    <jointvel joint="right_shoulder_y" name="right_shoulder_y_qvel"/>
+    <jointvel joint="left_shoulder_y" name="left_shoulder_y_qvel"/>
+    <jointvel joint="right_hip_y" name="right_hip_y_qvel"/>
+    <jointvel joint="right_hip_z" name="right_hip_z_qvel"/>
+    <jointvel joint="right_knee" name="right_knee_qvel"/>
+    <jointvel joint="right_ankle_y" name="right_ankle_y_qvel"/>
+    <jointvel joint="left_hip_y" name="left_hip_y_qvel"/>
+    <jointvel joint="left_hip_z" name="left_hip_z_qvel"/>
+    <jointvel joint="left_knee" name="left_knee_qvel"/>
+    <jointvel joint="left_ankle_y" name="left_ankle_y_qvel"/>
 
     <!-- <force name="left_ankle_force"       site="left_ankle"/>
     <force name="right_ankle_force"      site="right_ankle"/>

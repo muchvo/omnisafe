@@ -38,6 +38,8 @@ class Ant(BaseAgent):
             self.__class__.__name__, random_generator, placements, locations, keepout, rot
         )
 
+        self.sensor_conf.sensors += ('agent_zpos', 'agent_qvel')
+
     def is_alive(self):
         """Die if it touches the ground."""
         return self.engine.data.body('agent').xpos.copy()[2] > 0.08

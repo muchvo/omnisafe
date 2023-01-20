@@ -34,3 +34,7 @@ from safety_gymnasium.tasks.race.race_level0 import RaceLevel0
 from safety_gymnasium.tasks.race.race_level1 import RaceLevel1
 from safety_gymnasium.tasks.race.race_level2 import RaceLevel2
 from safety_gymnasium.tasks.run.run import RunLevel0
+from safety_gymnasium.tasks.manipulation.extract.extract_level0 import ExtractLevel0
+from safety_gymnasium.tasks.manipulation.pick_and_place.pick_and_place_level0 import PickAndPlaceLevel0
+from safety_gymnasium.tasks.manipulation.pick_and_place.pick_and_place_level1 import PickAndPlaceLevel1
+from safety_gymnasium.tasks.manipulation.pick_and_place.pick_and_place_level2 import PickAndPlaceLevel2

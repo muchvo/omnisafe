@@ -33,7 +33,6 @@ class PushBox(Objects):  # pylint: disable=too-many-instance-attributes
     keepout: float = 0.2  # Box keepout radius for placement
     null_dist: float = 2  # Within box_null_dist * box_size radius of box, no box reward given
     density: float = 0.001
-    null_dist: float = 0
 
     reward_box_dist: float = 1.0  # Dense reward for moving the agent towards the box
     reward_box_goal: float = 1.0  # Reward for moving the box towards the goal
@@ -61,7 +60,6 @@ class PushBox(Objects):  # pylint: disable=too-many-instance-attributes
     def _specific_agent_config(self):
         """Modify the push_box property according to specific agent."""
         if self.agent.__class__.__name__ == 'Car':
-            # pylint: disable=no-member
             self.size = 0.125  # Box half-radius size
             self.keepout = 0.125  # Box keepout radius for placement
             self.density = 0.0005

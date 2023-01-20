@@ -91,27 +91,27 @@
     <subtreelinvel body="agent" name="subtreelinvel"/>
     <subtreeangmom body="agent" name="subtreeangmom"/>
 
-    <framepos objtype="site" objname="agent" name="agent_pos"/>
+    <framepos objtype="site" objname="agent" name="agent_zpos"/>
 
-    <jointpos joint="hip_1" name="hip_1"/>
-    <jointpos joint="ankle_1" name="ankle_1"/>
-    <jointpos joint="hip_2" name="hip_2"/>
-    <jointpos joint="ankle_2" name="ankle_2"/>
-    <jointpos joint="hip_3" name="hip_3"/>
-    <jointpos joint="ankle_3" name="ankle_3"/>
-    <jointpos joint="hip_4" name="hip_4"/>
-    <jointpos joint="ankle_4" name="ankle_4"/>
+    <jointpos joint="hip_1" name="hip_1_qpos"/>
+    <jointpos joint="ankle_1" name="ankle_1_qpos"/>
+    <jointpos joint="hip_2" name="hip_2_qpos"/>
+    <jointpos joint="ankle_2" name="ankle_2_qpos"/>
+    <jointpos joint="hip_3" name="hip_3_qpos"/>
+    <jointpos joint="ankle_3" name="ankle_3_qpos"/>
+    <jointpos joint="hip_4" name="hip_4_qpos"/>
+    <jointpos joint="ankle_4" name="ankle_4_qpos"/>
 
     <frameangvel objtype="site" objname="agent" name="agent_qvel"/>
 
-    <jointvel joint="hip_1" name="hip_1_vel"/>
-    <jointvel joint="ankle_1" name="ankle_1_vel"/>
-    <jointvel joint="hip_2" name="hip_2_vel"/>
-    <jointvel joint="ankle_2" name="ankle_2_vel"/>
-    <jointvel joint="hip_3" name="hip_3_vel"/>
-    <jointvel joint="ankle_3" name="ankle_3_vel"/>
-    <jointvel joint="hip_4" name="hip_4_vel"/>
-    <jointvel joint="ankle_4" name="ankle_4_vel"/>
+    <jointvel joint="hip_1" name="hip_1_qvel"/>
+    <jointvel joint="ankle_1" name="ankle_1_qvel"/>
+    <jointvel joint="hip_2" name="hip_2_qvel"/>
+    <jointvel joint="ankle_2" name="ankle_2_qvel"/>
+    <jointvel joint="hip_3" name="hip_3_qvel"/>
+    <jointvel joint="ankle_3" name="ankle_3_qvel"/>
+    <jointvel joint="hip_4" name="hip_4_qvel"/>
+    <jointvel joint="ankle_4" name="ankle_4_qvel"/>
   </sensor>
   <actuator>
     <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip_1" gear="150"/>

@@ -29,11 +29,10 @@ class PushLevel0(BaseTask):
         self.placements_conf.extents = [-1, -1, 1, 1]
 
         self._add_geoms(Goal())
-        self._add_objects(PushBox())
+        self._add_objects(PushBox(null_dist=0))
 
         self.last_dist_box = None
         self.last_box_goal = None
-        self.last_dist_goal = None
 
     def calculate_reward(self):
         """Determine reward depending on the agent and tasks."""
@@ -71,7 +70,6 @@ class PushLevel0(BaseTask):
     def update_world(self):
         """Build a new goal position, maybe with resampling due to hazards."""
         self.build_goal_position()
-        self.last_dist_goal = self.dist_goal()
         self.last_dist_box = self.dist_box()
         self.last_box_goal = self.dist_box_goal()
 

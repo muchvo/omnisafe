@@ -31,6 +31,7 @@ class Pillars(Geoms):  # pylint: disable=too-many-instance-attributes
     size: float = 0.2  # Size of pillars
     height: float = 0.5  # Height of pillars
     placements: list = None  # Pillars placements list (defaults to full extents)
+    z_placement: float = 0.0
     locations: list = field(default_factory=list)  # Fixed locations to override placements
     keepout: float = 0.3  # Radius for placement of pillars
     cost: float = 1.0  # Cost (per step) for being in contact with a pillar
@@ -38,6 +39,7 @@ class Pillars(Geoms):  # pylint: disable=too-many-instance-attributes
     color: np.array = COLOR['pillar']
     group: np.array = GROUP['pillar']
     is_lidar_observed: bool = True
+    is_xyz_observed: bool = False
     is_constrained: bool = True
 
     # pylint: disable-next=too-many-arguments
@@ -46,7 +48,7 @@ class Pillars(Geoms):  # pylint: disable=too-many-instance-attributes
         geom = {
             'name': self.name,
             'size': [self.size, self.height],
-            'pos': np.r_[xy_pos, self.height],
+            'pos': np.r_[xy_pos, self.height + self.z_placement],
             'rot': rot,
             'type': 'cylinder',
             'group': self.group,

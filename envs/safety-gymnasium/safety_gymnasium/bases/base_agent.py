@@ -51,10 +51,10 @@ class SensorInfo:
     # Needed to figure out observation space
     hinge_pos_names: list = field(default_factory=list)
     hinge_vel_names: list = field(default_factory=list)
-    freejoint_pos_name: str = None
-    freejoint_qvel_name: str = None
     ballquat_names: list = field(default_factory=list)
     ballangvel_names: list = field(default_factory=list)
+    slide_pos_names: list = field(default_factory=list)
+    slide_vel_names: list = field(default_factory=list)
     sensor_dim: list = field(default_factory=dict)
 
 
@@ -178,16 +178,14 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
                     # but this removes one of the good properties about our observations.
                     # (That we are invariant to relative whole-world transforms)
                     # If slide joints are added we should ensure this stays true!
-                    raise ValueError('Slide joints in agents not currently supported')
-            elif (
-                # pylint: disable-next=no-member
-                self.engine.model.sensor(sensor_id).objtype
-                == mujoco.mjtObj.mjOBJ_SITE  # pylint: disable=no-member
-            ):  # pylint: disable=no-member
-                if name == 'agent_pos':
-                    self.sensor_info.freejoint_pos_name = name
-                elif name == 'agent_qvel':
-                    self.sensor_info.freejoint_qvel_name = name
+                    if sensor_type == mujoco.mjtSensor.mjSENS_JOINTPOS:  # pylint: disable=no-member
+                        self.sensor_info.slide_pos_names.append(name)
+                    elif (
+                        sensor_type == mujoco.mjtSensor.mjSENS_JOINTVEL
+                    ):  # pylint: disable=no-member
+                        self.sensor_info.slide_vel_names.append(name)
+                    else:
+                        raise ValueError('Slide joints in agents not currently supported')
 
     def set_engine(self, engine: Engine):
         """Set the engine instance."""
@@ -213,6 +211,8 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
 
         for sensor in self.sensor_conf.sensors:  # Explicitly listed sensors
             dim = self.sensor_info.sensor_dim[sensor]
+            if sensor == 'agent_zpos':
+                dim = 1
             obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (dim,), dtype=np.float64)
         # Velocities don't have wraparound effects that rotational positions do
         # Wraparounds are not kind to neural networks
@@ -222,12 +222,6 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
         for sensor in self.sensor_info.hinge_vel_names:
             obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
         for sensor in self.sensor_info.ballangvel_names:
-            obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (3,), dtype=np.float64)
-        if self.sensor_info.freejoint_pos_name:
-            sensor = self.sensor_info.freejoint_pos_name
-            obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
-        if self.sensor_info.freejoint_qvel_name:
-            sensor = self.sensor_info.freejoint_qvel_name
             obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (3,), dtype=np.float64)
         # Angular positions have wraparound effects, so output something more friendly
         if self.sensor_conf.sensors_angle_components:
@@ -255,13 +249,14 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
         else:
             # Otherwise include the sensor without any processing
             for sensor in self.sensor_info.hinge_pos_names:
-                obs_space_dict[sensor] = gymnasium.spaces.Box(
-                    -np.inf, np.inf, (1,), dtype=np.float64
-                )
+                obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
             for sensor in self.sensor_info.ballquat_names:
-                obs_space_dict[sensor] = gymnasium.spaces.Box(
-                    -np.inf, np.inf, (4,), dtype=np.float64
-                )
+                obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (4,), dtype=np.float64)
+
+        for sensor in self.sensor_info.slide_vel_names:
+            obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
+        for sensor in self.sensor_info.slide_pos_names:
+            obs_space_dict[sensor] = gymnasium.spaces.Box(-np.inf, np.inf, (1,), dtype=np.float64)
 
         return obs_space_dict
 
@@ -272,15 +267,11 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
         # Sensors which can be read directly, without processing
         for sensor in self.sensor_conf.sensors:  # Explicitly listed sensors
             obs[sensor] = self.get_sensor(sensor)
+            if sensor == 'agent_zpos':
+                obs[sensor] = obs[sensor][2:]
         for sensor in self.sensor_info.hinge_vel_names:
             obs[sensor] = self.get_sensor(sensor)
         for sensor in self.sensor_info.ballangvel_names:
-            obs[sensor] = self.get_sensor(sensor)
-        if self.sensor_info.freejoint_pos_name:
-            sensor = self.sensor_info.freejoint_pos_name
-            obs[sensor] = self.get_sensor(sensor)[2:]
-        if self.sensor_info.freejoint_qvel_name:
-            sensor = self.sensor_info.freejoint_qvel_name
             obs[sensor] = self.get_sensor(sensor)
         # Process angular position sensors
         if self.sensor_conf.sensors_angle_components:
@@ -295,6 +286,11 @@ class BaseAgent(abc.ABC):  # pylint: disable=too-many-instance-attributes
                 obs[sensor] = self.get_sensor(sensor)
             for sensor in self.sensor_info.ballquat_names:
                 obs[sensor] = self.get_sensor(sensor)
+
+        for sensor in self.sensor_info.slide_vel_names:
+            obs[sensor] = self.get_sensor(sensor)
+        for sensor in self.sensor_info.slide_pos_names:
+            obs[sensor] = self.get_sensor(sensor)
 
         return obs
 

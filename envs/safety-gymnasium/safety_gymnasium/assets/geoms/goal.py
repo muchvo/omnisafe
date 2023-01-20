@@ -29,6 +29,7 @@ class Goal(Geoms):  # pylint: disable=too-many-instance-attributes
     name: str = 'goal'
     size: float = 0.3
     placements: list = None  # Placements where goal may appear (defaults to full extents)
+    z_placement: float = 0.0
     locations: list = field(default_factory=list)  # Fixed locations to override placements
     keepout: float = 0.4  # Keepout radius when placing goals
     alpha: float = 0.25
@@ -43,6 +44,7 @@ class Goal(Geoms):  # pylint: disable=too-many-instance-attributes
     group: np.array = GROUP['goal']
     is_lidar_observed: bool = True
     is_comp_observed: bool = False
+    is_xyz_observed: bool = False
     is_constrained: bool = False
     is_meshed: bool = False
 
@@ -51,7 +53,7 @@ class Goal(Geoms):  # pylint: disable=too-many-instance-attributes
         geom = {
             'name': 'goal',
             'size': [self.size, self.size / 2],
-            'pos': np.r_[xy_pos, self.size / 2 + 1e-2],
+            'pos': np.r_[xy_pos, self.size / 2 + self.z_placement + 1e-2],
             'rot': rot,
             'type': 'cylinder',
             'contype': 0,

@@ -141,7 +141,11 @@ class BaseTask(Underlying):  # pylint: disable=too-many-instance-attributes,too-
                     0.0, 1.0, (self.lidar_conf.num_bins,), dtype=np.float64
                 )
             if hasattr(obstacle, 'is_comp_observed') and obstacle.is_comp_observed:
-                gymnasium.spaces.Box(-1.0, 1.0, (self.compass_conf.shape,), dtype=np.float64)
+                name = obstacle.name + '_' + 'compass'
+                obs_space_dict[name] = gymnasium.spaces.Box(-1.0, 1.0, (self.compass_conf.shape,), dtype=np.float64)
+            if hasattr(obstacle, 'is_xyz_observed') and obstacle.is_xyz_observed:
+                name = obstacle.name + '_' + 'xyz'
+                obs_space_dict[name] = gymnasium.spaces.Box(-np.inf, np.inf, (3,), dtype=np.float64)
 
         if self.observe_vision:
             width, height = self.vision_env_conf.vision_size
@@ -289,7 +293,9 @@ class BaseTask(Underlying):  # pylint: disable=too-many-instance-attributes,too-
             if obstacle.is_lidar_observed:
                 obs[obstacle.name + '_lidar'] = self._obs_lidar(obstacle.pos, obstacle.group)
             if hasattr(obstacle, 'is_comp_observed') and obstacle.is_comp_observed:
-                obs[obstacle.name + '_comp'] = self._obs_compass(obstacle.pos)
+                obs[obstacle.name + '_compass'] = self._obs_compass(obstacle.pos)
+            if hasattr(obstacle, 'is_xyz_observed') and obstacle.is_xyz_observed:
+                obs[obstacle.name + '_xyz'] = np.array(obstacle.pos)
 
         if self.observe_vision:
             obs['vision'] = self._obs_vision()

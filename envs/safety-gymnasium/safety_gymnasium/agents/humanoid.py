@@ -33,6 +33,8 @@ class Humanoid(BaseAgent):
             self.__class__.__name__, random_generator, placements, locations, keepout, rot
         )
 
+        self.sensor_conf.sensors += ('agent_zpos', 'agent_qvel')
+
     def is_alive(self):
         pass
 

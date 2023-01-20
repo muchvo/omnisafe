@@ -92,7 +92,10 @@ textures:
     '@name': orange
     '@file': orange.PNG
     '@type': 2d
-
+  human:
+    '@name': human
+    '@file': made_human.png
+    '@type': 2d
 
 materials:
   matplane:
@@ -177,6 +180,11 @@ materials:
     '@texture': orange
     '@specular': 1
     '@shininess': 1
+  human:
+    '@name': human
+    '@texture': human
+    '@specular': 1
+    '@shininess': 1
 
 meshes:
   bush:
@@ -235,3 +243,7 @@ meshes:
     '@name': orange
     '@file': orange.obj
     '@scale': 0.12 0.12 0.12
+  human:
+    '@name': human
+    '@file': made_human.obj
+    '@scale': 0.007 0.007 0.007
