@@ -45,3 +45,8 @@ class Panda(BaseAgent):
 
     def reset(self):
         """No need to specific reset anything."""
+
+    @property
+    def pos(self):
+        """Get the position of the agent in the simulator world reference frame."""
+        return self.engine.data.geom('left_finger_pos').xpos.copy()

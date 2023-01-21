@@ -40,7 +40,14 @@ class PickAndPlaceLevel0(BaseTask):
             'is_xyz_observed': True,
         }
         self._add_geoms(Goal(**goal_config))
-        self._add_objects(Box(size=0.025, placements=np.array([-1.1, -0.5, -0.4, 0.5], ndmin=2), z_placement=0.5, is_xyz_observed=True))
+        box_config = {
+            'size': 0.025,
+            'placements': np.array([-1.1, -0.5, -0.4, 0.5], ndmin=2),
+            'z_placement': 0.5,
+            'null_dist': 1,
+            'is_xyz_observed': True,
+        }
+        self._add_objects(Box(**box_config))
 
         self._is_load_static_geoms = True
 
