@@ -33,14 +33,14 @@ class PickAndPlaceLevel0(BaseTask):
         self.agent.rot = 0
 
         goal_config = {
-            'size': 0.05,
+            'size': 0.025,
             'placements': np.array([0.1, -0.5, 1.1, 0.5], ndmin=2),
             'z_placement': 0.5,
             'is_lidar_observed': False,
             'is_xyz_observed': True,
         }
         self._add_geoms(Goal(**goal_config))
-        self._add_objects(Box(placements=np.array([-1.1, -0.5, -0.4, 0.5], ndmin=2), z_placement=0.5, is_xyz_observed=True))
+        self._add_objects(Box(size=0.025, placements=np.array([-1.1, -0.5, -0.4, 0.5], ndmin=2), z_placement=0.5, is_xyz_observed=True))
 
         self._is_load_static_geoms = True
 

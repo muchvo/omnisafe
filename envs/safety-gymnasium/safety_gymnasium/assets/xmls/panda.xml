@@ -215,7 +215,7 @@
                       <geom mesh="hand_3" material="white" class="visual"/>
                       <geom mesh="hand_4" material="off_white" class="visual"/>
                       <geom mesh="hand_c" class="collision"/>
-                      <body name="left_finger" pos="0 0 0.0584">
+                      <body name="agent" pos="0 0 0.0584">
                         <inertial mass="0.015" pos="0 0 0" diaginertia="2.375e-6 2.375e-6 7.5e-7"/>
                         <joint name="finger_joint1" class="finger"/>
                         <geom mesh="finger_0" material="off_white" class="visual"/>
@@ -227,7 +227,7 @@
                         <geom class="fingertip_pad_collision_4"/>
                         <geom class="fingertip_pad_collision_5"/>
                       </body>
-                      <body name="agent" pos="0 0 0.0584" quat="0 0 0 1">
+                      <body name="right_finger" pos="0 0 0.0584" quat="0 0 0 1">
                         <inertial mass="0.015" pos="0 0 0" diaginertia="2.375e-6 2.375e-6 7.5e-7"/>
                         <joint name="finger_joint2" class="finger"/>
                         <geom mesh="finger_0" material="off_white" class="visual"/>
@@ -281,7 +281,7 @@
     <jointvel joint="finger_joint1" name="finger_joint1_qvel"/>
     <!-- <touch body="left_finger" name="left_finger"/> -->
 
-    <framepos objtype="xbody" objname="left_finger" name="left_finger_pos"/>
+    <framepos objtype="xbody" objname="agent" name="left_finger_pos"/>
   </sensor>
 
   <actuator>
