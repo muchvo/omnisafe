@@ -26,7 +26,7 @@ class PickAndPlaceLevel0(BaseTask):
 
     def __init__(self, config):
         super().__init__(config=config)
-        self.num_steps = 500
+        self.num_steps = 150
 
         self.agent.z_height = 0.5
         self.agent.locations = [(-0.2, -0.4)]
@@ -45,7 +45,8 @@ class PickAndPlaceLevel0(BaseTask):
             'placements': np.array([-1.1, -0.5, -0.4, 0.5], ndmin=2),
             'z_placement': 0.5,
             'null_dist': 1,
-            'is_xyz_observed': True,
+            'is_xyz_observed': False,
+            'is_specific_obs': True,
         }
         self._add_objects(Box(**box_config))
 
@@ -53,6 +54,7 @@ class PickAndPlaceLevel0(BaseTask):
 
         self.last_dist_box = None
         self.last_box_goal = None
+        self.contact_reward = 1.0
 
     def calculate_reward(self):
         """Determine reward depending on the agent and tasks."""
@@ -75,6 +77,19 @@ class PickAndPlaceLevel0(BaseTask):
         # pylint: disable-next=no-member
         reward += (self.last_box_goal - dist_box_goal) * self.box.reward_box_goal
         self.last_box_goal = dist_box_goal
+
+        # contact reward
+        is_left_contact = False
+        is_right_contact = False
+        for contact in self.data.contact[: self.data.ncon]:
+            geom_ids = [contact.geom1, contact.geom2]
+            geom_names = sorted([self.model.geom(g).name for g in geom_ids])
+            if any('left_pad' in n for n in geom_names) and any('box' in n for n in geom_names):
+                is_left_contact = True
+            if any('right_pad' in n for n in geom_names) and any('box' in n for n in geom_names):
+                is_right_contact = True
+            if is_left_contact and is_right_contact:
+                reward += self.contact_reard
 
         if self.goal_achieved:
             reward += self.goal.reward_goal  # pylint: disable=no-member
@@ -107,7 +122,7 @@ class PickAndPlaceLevel0(BaseTask):
     def goal_achieved(self):
         """Whether the goal of task is achieved."""
         # pylint: disable-next=no-member
-        return self.dist_box_goal() <= self.goal.size
+        return self.dist_box_goal() <= self.box.size
 
     @property
     def goal_pos(self):

@@ -146,6 +146,9 @@ class BaseTask(Underlying):  # pylint: disable=too-many-instance-attributes,too-
             if hasattr(obstacle, 'is_xyz_observed') and obstacle.is_xyz_observed:
                 name = obstacle.name + '_' + 'xyz'
                 obs_space_dict[name] = gymnasium.spaces.Box(-np.inf, np.inf, (3,), dtype=np.float64)
+            if hasattr(obstacle, 'is_specific_obs') and obstacle.is_specific_obs:
+                name = obstacle.name + '_' + 'specific'
+                obs_space_dict[name] = gymnasium.spaces.Box(-np.inf, np.inf, (13,), dtype=np.float64)
 
         if self.observe_vision:
             width, height = self.vision_env_conf.vision_size
@@ -296,6 +299,8 @@ class BaseTask(Underlying):  # pylint: disable=too-many-instance-attributes,too-
                 obs[obstacle.name + '_compass'] = self._obs_compass(obstacle.pos)
             if hasattr(obstacle, 'is_xyz_observed') and obstacle.is_xyz_observed:
                 obs[obstacle.name + '_xyz'] = np.array(obstacle.pos)
+            if hasattr(obstacle, 'is_specific_obs') and obstacle.is_specific_obs:
+                obs[obstacle.name + '_specific'] = np.array(obstacle.specific_obs)
 
         if self.observe_vision:
             obs['vision'] = self._obs_vision()

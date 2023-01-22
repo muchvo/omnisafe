@@ -43,6 +43,7 @@ class Box(Objects):  # pylint: disable=too-many-instance-attributes
     is_lidar_observed: bool = False
     is_comp_observed: bool = False
     is_xyz_observed: bool = False
+    is_specific_obs: bool = False
     is_constrained: bool = False
 
     def get_config(self, xy_pos, rot):
@@ -63,3 +64,8 @@ class Box(Objects):  # pylint: disable=too-many-instance-attributes
     def pos(self):
         """Helper to get the box position."""
         return self.engine.data.body('box').xpos.copy()
+
+    @property
+    def specific_obs(self):
+        """Helper to get the box's orientation, the linear and rotational speed."""
+        return np.hstack((self.engine.data.joint('box').qpos.copy(), self.engine.data.joint('box').qvel.copy()))
