@@ -54,7 +54,7 @@ class PickAndPlaceLevel0(BaseTask):
 
         self.last_dist_box = None
         self.last_box_goal = None
-        self.contact_reward = 1.0
+        self.contact_reward = 0.2
 
     def calculate_reward(self):
         """Determine reward depending on the agent and tasks."""
@@ -89,7 +89,7 @@ class PickAndPlaceLevel0(BaseTask):
             if any('right_pad' in n for n in geom_names) and any('box' in n for n in geom_names):
                 is_right_contact = True
             if is_left_contact and is_right_contact:
-                reward += self.contact_reard
+                reward += self.contact_reward
 
         if self.goal_achieved:
             reward += self.goal.reward_goal  # pylint: disable=no-member
