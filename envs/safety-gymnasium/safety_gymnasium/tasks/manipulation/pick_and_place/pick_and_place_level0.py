@@ -55,6 +55,7 @@ class PickAndPlaceLevel0(BaseTask):
         self.last_dist_box = None
         self.last_box_goal = None
         self.contact_reward = 0.2
+        self.terminated = False
 
     def calculate_reward(self):
         """Determine reward depending on the agent and tasks."""
@@ -72,12 +73,6 @@ class PickAndPlaceLevel0(BaseTask):
         )
         self.last_dist_box = dist_box
 
-        # Distance from box to goal
-        dist_box_goal = self.dist_box_goal()
-        # pylint: disable-next=no-member
-        reward += (self.last_box_goal - dist_box_goal) * self.box.reward_box_goal
-        self.last_box_goal = dist_box_goal
-
         # contact reward
         is_left_contact = False
         is_right_contact = False
@@ -90,6 +85,14 @@ class PickAndPlaceLevel0(BaseTask):
                 is_right_contact = True
             if is_left_contact and is_right_contact:
                 reward += self.contact_reward
+                break
+
+        # Distance from box to goal
+        dist_box_goal = self.dist_box_goal()
+        # pylint: disable-next=no-member
+        if is_left_contact and is_right_contact:
+            reward += (self.last_box_goal - dist_box_goal) * self.box.reward_box_goal
+        self.last_box_goal = dist_box_goal
 
         if self.goal_achieved:
             reward += self.goal.reward_goal  # pylint: disable=no-member
@@ -97,10 +100,11 @@ class PickAndPlaceLevel0(BaseTask):
         return reward
 
     def specific_reset(self):
-        pass
+        self.terminated = False
 
     def specific_step(self):
-        pass
+        if self.box.pos[2] < 0.45:
+            self.terminated = True
 
     def update_world(self):
         """Build a new goal position, maybe with resampling due to hazards."""

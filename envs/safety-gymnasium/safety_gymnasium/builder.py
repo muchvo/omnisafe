@@ -178,6 +178,9 @@ class Builder(gymnasium.Env, gymnasium.utils.EzPickle):
         if not self.task.agent.is_alive():
             self.terminated = True
 
+        if hasattr(self.task, 'terminated'):
+            self.terminated = self.task.terminated or self.terminated
+
         # Timeout
         self.steps += 1
         if self.steps >= self.task.num_steps:
