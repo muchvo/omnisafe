@@ -18,7 +18,7 @@ from safety_gymnasium.assets.geoms import Goal
 from safety_gymnasium.bases.base_task import BaseTask
 import numpy as np
 
-class GoalLevel0(BaseTask):
+class GoalLevel3(BaseTask):
     """A robot must navigate to a goal."""
 
     def __init__(self, config):

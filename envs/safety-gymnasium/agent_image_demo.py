@@ -26,7 +26,7 @@ DIR = os.path.join(os.path.dirname(__file__), 'demoimg')
 
 def run_random(env_name):
     """Random run."""
-    env = safety_gymnasium.make(env_name, render_mode="rgb_array", width=2560, height=2560, camera_name="fixedfar")
+    env = safety_gymnasium.make(env_name, render_mode="rgb_array", width=2560, height=2560, camera_name="fixednear")
     obs, _ = env.reset()
     # Use below to specify seed.
     # obs, _ = env.reset(seed=0)
@@ -47,6 +47,7 @@ def run_random(env_name):
         obs, reward, cost, terminated, truncated, info = env.step(act)
         img = env.render()
         img = Image.fromarray(img)
+        os.makedirs(DIR, exist_ok=True)
         img.save(os.path.join(DIR, f"{env_name}.jpeg"))
 
         ep_ret += reward
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--env', default='SafetyRacecarGoal2Vision-v0')
     args = parser.parse_args()
-    agent_id=['Point', 'Car', 'Racecar']
+    agent_id=['Point', 'Car', 'Racecar', 'Ant']
     env_id=['Goal']
     level=['0']
     for agent in agent_id:
