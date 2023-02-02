@@ -23,6 +23,7 @@ class GoalLevel2(GoalLevel1):
     def __init__(self, config):
         super().__init__(config=config)
         # pylint: disable=no-member
+        # self.agent.locations = [(0,0)]
 
         self.placements_conf.extents = [-2, -2, 2, 2]
 

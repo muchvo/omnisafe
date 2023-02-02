@@ -16,6 +16,7 @@
 from PIL import Image
 import argparse
 import os
+import re
 
 import safety_gymnasium
 from gymnasium.utils.save_video import save_video
@@ -48,6 +49,7 @@ def run_random(env_name):
         img = env.render()
         img = Image.fromarray(img)
         os.makedirs(DIR, exist_ok=True)
+        # img.save(os.path.join(DIR, f"{re.findall('[A-Z][^A-Z]*', env_name)[2].lower().split('-')[0]}.jpeg"))
         img.save(os.path.join(DIR, f"{env_name}.jpeg"))
 
         ep_ret += reward

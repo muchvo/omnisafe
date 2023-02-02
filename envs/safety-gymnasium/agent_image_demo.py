@@ -16,6 +16,7 @@
 from PIL import Image
 import argparse
 import os
+import re
 
 import safety_gymnasium
 from gymnasium.utils.save_video import save_video
