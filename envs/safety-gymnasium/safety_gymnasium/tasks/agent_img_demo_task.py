@@ -25,7 +25,7 @@ class GoalLevel3(BaseTask):
         super().__init__(config=config)
 
         self.placements_extents = [-1, -1, 1, 1]
-        self.agent.rot=0
+        self.agent.rot= np.pi/2 * 0
         self.agent.locations = [(0,0)]
 
         # self.add_geoms(Goal(keepout=0.305))

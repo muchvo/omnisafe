@@ -61,7 +61,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     agent_id=['Point', 'Car', 'Racecar', 'Ant']
     env_id=['Goal']
-    level=['0']
+    level=['3']
     for agent in agent_id:
         for env in env_id:
             for l in level:
