@@ -25,7 +25,8 @@ class GoalLevel3(BaseTask):
         super().__init__(config=config)
 
         self.placements_extents = [-1, -1, 1, 1]
-        # self.agent.rot= np.pi/2 * 0
+        self.agent.rot= np.pi/2 * 0
+        self.agent.locations = [(0,0)]
         # self.agent.locations = [(1.3,0)]
         # self.agent.keepout = 0
 
